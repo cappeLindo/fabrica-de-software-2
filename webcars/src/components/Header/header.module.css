@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+.header {
+    width: 100%;
+    height: 60px;
+    background-color: var(--corPrecimento);
+    display: flex;
+    align-items: center;    
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo img {
+    display: flex;
+    margin-right: 20px;
+    margin: 0;
+}
+
+.menuIcon {
+    display: flex;
+    cursor: pointer;
+}
+
+.voltar {
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    text-align: center;
+    position: absolute;
+    top: 69px;
+    background-color: #fff;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.135);
+    margin-left: 10px;
+    border-radius: 25px;
+    transition: opacity 0.3s ease, visibility 0.3s ease; 
+    opacity: 1; 
+    visibility: visible; 
+    z-index: 9998; 
+    width: 90px;
+    height: 40px;
+}
+
+.voltar.hidden {
+    opacity: 0; 
+    visibility: hidden; 
+}
+
+.voltar a {
+    font-family: "Poppins", sans-serif;
+    color: #000;
+    margin-top: 21px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+    height: 100%; 
+    line-height: 18px; 
+    text-align: center;
+}
+
+.voltar a:hover {
+    color: var(--corDetalhes);
+}
+.menuLateral {
+    display: flex;
+    position: absolute;
+    border-radius: 13px;
+    flex-direction: column;
+    width: 160px;
+    margin-top: 250px;
+    margin-left: -200px;
+    transition: transform 0.3s ease; 
+    z-index: 9999;
+    font-family: "Poppins", sans-serif;
+    background-color: #fff; 
+    border-radius: 13px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.138);
+    padding: 5px 30px;
+}
+  
+.menuLateral a { 
+    font-family: "Poppins", sans-serif;
+    padding: 10px 0;
+    color: #000;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+
+}
+
+.menuLateral a:hover {
+    color: var(--corDetalhes);
+}
+
+.menuLateral.open {
+    transform: translateX(208px); 
+  }
+
+
+.barraPesquisa { 
+    width: 550px; 
+    height: 35px;
+    position: relative;
+    display: flex;
+    margin: auto;
+    align-items: center;
+    background-color: #e6e6e6; 
+    border-radius: 5px; 
+}
+
+.barraPesquisa input { 
+    border: none;
+    width: 100%;
+    height: 100%;
+    padding-left: 15px;
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+    color: #575757;
+    font-weight: 600;
+    background-color: transparent; /* Para corresponder ao fundo */
+}
+
+.barraPesquisa input::placeholder {
+    color: #989898; /* Cor mais clara para o placeholder */
+    font-size: 11px;
+}
+
+.barraPesquisa input:focus {
+    outline: none;
+}
+
+.lupa {
+    background-color: var(--corDetalhes);
+    border: none;
+    width: 60px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 0 5px 5px 0;    
+}
+
+.lupa i {
+    color: white;
+    font-size: 20px;
+    margin-top: 2px;
+}
+
+.cidades {
+    background-color: whitesmoke;
+    border: none;
+    border-radius: 5px;
+    font-family: "Poppins", sans-serif;
+    color: #505050;
+    outline: none;
+    font-size: 12px;
+}
+
+.cidades option:hover {
+    background-color: var(--corDetalhes);
+    color: #fff;
+}
+
+.cidades:focus {
+    outline: none;
+    border: none;
+}
+
+.localRegiao {
+    display: flex;
+    align-items:last baseline;
+    bottom: 0;
+    margin: 0px 25px 10px;
+    height: 100%;
+}
+
+.localRegiao i {
+    font-size: 18px; 
+    color: var(--corFontes); 
+    margin-right: 10px;
+}
+
+.perfilCarrinho {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 30px; 
+    margin-right: 10px;
+}
+
+.linkPerfil{
+    font-size: 47px;
+    color: #1a1a1a;
+    margin-top: 3px;
+}
+
+.carrinho {
+    cursor: pointer;
+    margin-top: 28px;
+}
+
+.entrarLogar {
+    margin: 0;
+    display: flex;
+    flex-direction: row; 
+    gap: 1px;
+    margin-top: 2rem;
+    justify-content: flex-end;
+    margin-right: 3.5rem;
+}
+
+.entrarLogar a {
+    text-decoration: none;
+    font-family: "Poppins", sans-serif;
+    color: var(--corFontes);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px;
+}
