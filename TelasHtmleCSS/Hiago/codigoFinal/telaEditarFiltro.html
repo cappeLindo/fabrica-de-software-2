@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Cars</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../../Vitor/header/Header.css">
+    <link rel="stylesheet" href="css/cssCorpo.css">
+    <link rel="stylesheet" href="../../Nathan/footer/footer.css">
+    <link rel="stylesheet" href="css/reset">
+    <link rel="shortcut icon" href="../../../img/logo.ico" type="image/x-icon">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="">
+        </div>
+        <!-- Ícone de três barras -->
+        <div class="menu-icon" onclick="toggleMenu()"> <i class="bi bi-list"></i> </div>
+
+        <!-- Menu Lateral -->
+        <div id="menuLateral" class="menu-lateral">
+            <a href="../../Hiago/codigoFinal/telaAdicionarfilto.html">Criar Filtro</a>
+            <a href="../../Carlos/perfil.html">Perfil</a>
+            <a href="../../Nathan/TelaDeSuporte/teladesuporte.html">Ajuda</a>
+            <a href="#">Sair</a>
+        </div>
+        <div class="voltar">
+            <a href="../../Vitor/tela_inicial/index.html">voltar</a>
+        </div>
+        <div class="local_regiao">
+            <i class="bi bi-geo-fill"></i>
+            <select name="cidades" id="cidades">
+                <option value="Alta Floresta D'Oeste">Alta Floresta D'Oeste</option>
+                <option value="Alto Alegre dos Parecis">Alto Alegre dos Parecis</option>
+                <option value="Alto Paraíso">Alto Paraíso</option>
+                <option value="Alvorada D'Oeste">Alvorada D'Oeste</option>
+                <option value="Ariquemes">Ariquemes</option>
+                <option value="Buritis">Buritis</option>
+                <option value="Cabixi">Cabixi</option>
+                <option value="Cacaulândia">Cacaulândia</option>
+                <option value="Cacoal">Cacoal</option>
+                <option value="Campo Novo de Rondônia">Campo Novo de Rondônia</option>
+                <option value="Candeias do Jamari">Candeias do Jamari</option>
+                <option value="Castanheiras">Castanheiras</option>
+                <option value="Cerejeiras">Cerejeiras</option>
+                <option value="Chupinguaia">Chupinguaia</option>
+                <option value="Colorado do Oeste">Colorado do Oeste</option>
+                <option value="Corumbiara">Corumbiara</option>
+                <option value="Costa Marques">Costa Marques</option>
+                <option value="Espigão D'Oeste">Espigão D'Oeste</option>
+                <option value="Governador Jorge Teixeira">Governador Jorge Teixeira</option>
+                <option value="Guajará-Mirim">Guajará-Mirim</option>
+                <option value="Itapuã do Oeste">Itapuã do Oeste</option>
+                <option value="Jaru">Jaru</option>
+                <option value="Ji-Paraná">Ji-Paraná</option>
+                <option value="Machadinho D'Oeste">Machadinho D'Oeste</option>
+                <option value="Ministro Andreazza">Ministro Andreazza</option>
+                <option value="Mirante da Serra">Mirante da Serra</option>
+                <option value="Monte Negro">Monte Negro</option>
+                <option value="Nova Brasilândia D'Oeste">Nova Brasilândia D'Oeste</option>
+                <option value="Nova Mamoré">Nova Mamoré</option>
+                <option value="Nova União">Nova União</option>
+                <option value="Novo Horizonte do Oeste">Novo Horizonte do Oeste</option>
+                <option value="Ouro Preto do Oeste">Ouro Preto do Oeste</option>
+                <option value="Parecis">Parecis</option>
+                <option value="Pimenta Bueno">Pimenta Bueno</option>
+                <option value="Pimenteiras do Oeste">Pimenteiras do Oeste</option>
+                <option value="Porto Velho">Porto Velho</option>
+                <option value="Presidente Médici">Presidente Médici</option>
+                <option value="Primavera de Rondônia">Primavera de Rondônia</option>
+                <option value="Rio Crespo">Rio Crespo</option>
+                <option value="Rolim de Moura">Rolim de Moura</option>
+                <option value="Santa Luzia D'Oeste">Santa Luzia D'Oeste</option>
+                <option value="São Felipe D'Oeste">São Felipe D'Oeste</option>
+                <option value="São Francisco do Guaporé">São Francisco do Guaporé</option>
+                <option value="São Miguel do Guaporé">São Miguel do Guaporé</option>
+                <option value="Seringueiras">Seringueiras</option>
+                <option value="Teixeirópolis">Teixeirópolis</option>
+                <option value="Theobroma">Theobroma</option>
+                <option value="Urupá">Urupá</option>
+                <option value="Vale do Anari">Vale do Anari</option>
+                <option value="Vale do Paraíso">Vale do Paraíso</option>
+                <option value="Vilhena" selected>Vilhena</option>
+            </select>
+        </div>
+        <div class="barra-pesquisa">
+            <input type="text" placeholder="BUSCAR CARROS, MARCAS ETC...">
+            <button class="lupa">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+
+        <div class="entrar-logar">
+            <a href="../../Maria/cadastroPess/cadastroPess.html">criar sua conta</a>
+            <a href="../../Julia/index.html">login</a>
+        </div>
+
+        <div class="carrinho">
+            <img src="../../Vitor/header/carrinho (1).png" alt="">
+        </div>
+
+        <div class="perfil">
+            <a href="../../Carlos/perfil.html" style="color: black;"><i class="bi bi-person-circle"></i></a>
+        </div>
+    </header>
+    <main>
+        <div class="formulario" style="display: block;">
+            <form action="">
+                <div class="campoFundo">
+                    <h2>Especificações do produto</h2>
+                    <div class="fundo">
+                        <section class="sectionDuasColunas">
+                            <div class="campodePrenchimento">
+                                <div class="select">
+                                    <div id="category-select">
+                                        <label for="options-view-button">Marca</label>
+                                        <input type="checkbox" id="options-view-button">
+                                        <div id="select-button">
+                                            <div id="selected-value">Escolha</div>
+                                            <div id="chevrons">
+                                                <i class="bi bi-chevron-down"></i>
+                                                <i class="bi bi-chevron-up"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul id="options">
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 1">
+                                            <span>Opção 1</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 2">
+                                            <span>Opção 2</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 3">
+                                            <span>Opção 3</span>
+                                        </li>
+                                        <li class="option">
+                                            <a href="../../Julia/INDEX2.html" name="category"
+                                                data-label="Opção 4" id="opcao-outro"><span>Outros</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="campodePrenchimento">
+                                <div class="select">
+                                    <div id="category-select">
+                                        <label for="options-view-button">Modelo</label>
+                                        <input type="checkbox" id="options-view-button">
+                                        <div id="select-button">
+                                            <div id="selected-value">Escolha</div>
+                                            <div id="chevrons">
+                                                <i class="bi bi-chevron-down"></i>
+                                                <i class="bi bi-chevron-up"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul id="options">
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 1">
+                                            <span>Opção 1</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 2">
+                                            <span>Opção 2</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 3">
+                                            <span>Opção 3</span>
+                                        </li>
+                                        <li class="option">
+                                            <a href="../../Julia/INDEX2.html" name="category"
+                                                data-label="Opção 4" id="opcao-outro"><span>Outros</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="campodePrenchimento">
+                                <div class="select">
+                                    <div id="category-select">
+                                        <label for="options-view-button">Cor</label>
+                                        <input type="checkbox" id="options-view-button">
+                                        <div id="select-button">
+                                            <div id="selected-value">Escolha</div>
+                                            <div id="chevrons">
+                                                <i class="bi bi-chevron-down"></i>
+                                                <i class="bi bi-chevron-up"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul id="options">
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 1">
+                                            <span>Opção 1</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 2">
+                                            <span>Opção 2</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 3">
+                                            <span>Opção 3</span>
+                                        </li>
+                                        <li class="option">
+                                            <a href="../../Julia/INDEX2.html" name="category"
+                                                data-label="Opção 4" id="opcao-outro"><span>Outros</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="campodePrenchimento">
+                                <div class="select">
+                                    <div id="category-select">
+                                        <label for="options-view-button">Categoria</label>
+                                        <input type="checkbox" id="options-view-button">
+                                        <div id="select-button">
+                                            <div id="selected-value">Escolha</div>
+                                            <div id="chevrons">
+                                                <i class="bi bi-chevron-down"></i>
+                                                <i class="bi bi-chevron-up"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul id="options">
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 1">
+                                            <span>Opção 1</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 2">
+                                            <span>Opção 2</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 3">
+                                            <span>Opção 3</span>
+                                        </li>
+                                        <li class="option">
+                                            <a href="../../Julia/INDEX2.html" name="category"
+                                                data-label="Opção 4" id="opcao-outro"><span>Outros</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="campodePrenchimento">
+                                <div class="select">
+                                    <div id="category-select">
+                                        <label for="options-view-button">Aro</label>
+                                        <input type="checkbox" id="options-view-button">
+                                        <div id="select-button">
+                                            <div id="selected-value">Escolha</div>
+                                            <div id="chevrons">
+                                                <i class="bi bi-chevron-down"></i>
+                                                <i class="bi bi-chevron-up"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul id="options">
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 1">
+                                            <span>Opção 1</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 2">
+                                            <span>Opção 2</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 3">
+                                            <span>Opção 3</span>
+                                        </li>
+                                        <li class="option">
+                                            <a href="../../Julia/INDEX2.html" name="category"
+                                                data-label="Opção 4" id="opcao-outro"><span>Outros</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="campodePrenchimento">
+                                <div class="select">
+                                    <div id="category-select">
+                                        <label for="options-view-button">Combustivel</label>
+                                        <input type="checkbox" id="options-view-button">
+                                        <div id="select-button">
+                                            <div id="selected-value">Escolha</div>
+                                            <div id="chevrons">
+                                                <i class="bi bi-chevron-down"></i>
+                                                <i class="bi bi-chevron-up"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul id="options">
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 1">
+                                            <span>Opção 1</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 2">
+                                            <span>Opção 2</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 3">
+                                            <span>Opção 3</span>
+                                        </li>
+                                        <li class="option">
+                                            <a href="../../Julia/INDEX2.html" name="category"
+                                                data-label="Opção 4" id="opcao-outro"><span>Outros</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="campodePrenchimento">
+                                <div class="select">
+                                    <div id="category-select">
+                                        <label for="options-view-button">Condição do veículo</label>
+                                        <input type="checkbox" id="options-view-button">
+                                        <div id="select-button">
+                                            <div id="selected-value">Escolha</div>
+                                            <div id="chevrons">
+                                                <i class="bi bi-chevron-down"></i>
+                                                <i class="bi bi-chevron-up"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul id="options">
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 1">
+                                            <span>Opção 1</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 2">
+                                            <span>Opção 2</span>
+                                        </li>
+                                        <li class="option">
+                                            <input type="radio" name="category" data-label="Opção 3">
+                                            <span>Opção 3</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="campodePrenchimento">
+                                <label for="campoData" class="nomePreenchimento">Ano</label>
+                                <input type="number" name="campoData" id="campoData" required class="campoSectionUm" placeholder="Ex: 2019" onchange="validarAno()">
+                            </div>
+
+                            <div class="campodePrenchimento">
+                                <label for="campoData" class="nomePreenchimento">Data de compra</label>
+                                <input type="date" name="campoData" id="campoData" class="campoSectionUm">
+                            </div>
+
+                            <div class="campodePrenchimento">
+                                <label for="campoQuilometragem" class="nomePreenchimento">Quilometragem</label>
+                                <input type="text" name="campoQuilometragem" id="campoQuilometragem" placeholder="Ex: 0 Km"
+                                    class="campoSectionUm" onchange="formatarDistancia()">
+                            </div>
+                            <div class="campodePrenchimento" id="checkboxEstilizada">
+                                <label for="campoIpva" class="nomePreenchimento">IPVA</label>
+                                <input type="checkbox" name="campoIpva" id="campoIpva" class="checkbox" onchange="toggleDataVencimento()">
+                                <label for="campoIpva" id="labelIpva" class="label"></label>
+                            </div>
+
+                            <div class="campodePrenchimento" id="checkboxEstilizada">
+                                <label for="campoBilndagem" class="nomePreenchimento">Blindagem</label>
+                                <input type="checkbox" name="campoBilndagem" id="campoBilndagem" class="checkbox">
+                                <label for="campoBilndagem" id="labelBlindagem" class="label"></label>
+                            </div>
+                        </section>
+
+                        <section class="sectionUmaColuna">
+                            <div id="campoDataVencimento" class="campodePrenchimentoDifgerente" style="display: none;">
+                                <label for="ipvaAno" class="nomePreenchimento">Data de vencimento do IPVA</label>
+                                <input type="date" name="ipvaAno" id="ipvaAno" class="campoSectionUm">
+                            </div>
+                            <div class="campodePrenchimentoDifgerente">
+                                <label for="campoNome" class="nomePreenchimento">Nome de exibição</label>
+                                <input type="text" name="campoNome" id="campoNome" placeholder="Ex: Marca Modelo"
+                                    required class="campoSectionDois">
+                            </div>
+
+                            <div class="campodePrenchimentoDifgerente">
+                                <label for="campoValorMin" class="nomePreenchimento">Valor mínimo</label>
+                                <input type="text" name="campoValorMin" id="campoValorMin" required
+                                    placeholder="Ex: R$ 79.490,00" class="campoSectionDois" onchange="formatarValorMonetarioMinimo()">
+                            </div>
+                            <div class="campodePrenchimentoDifgerente">
+                                <label for="campoValorMax" class="nomePreenchimento">Valor máximo</label>
+                                <input type="text" name="campoValorMax" id="campoValorMax" required
+                                    placeholder="Ex: R$ 100.000,00" class="campoSectionDois" onchange="formatarValorMonetarioMaximo()">
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <div class="campoBotoes">
+                    <button id="botaoEnviar" onclick="enviarFormulario(event)">Salvar</button>
+                    <button id="botaoExcluir" onclick="excluirFormulario(event)">Excluir</button>
+                </div>
+            </form>
+        </div>
+        <div class="conclusao" style="display: none;">
+            <div class="fundoClonclusao">
+                <h2 id="mensagemDecomclusao">ALTERAÇÕES FEITAS COM SUCESSO!</h2>
+                <div class="areaBotoes">
+                    <button><a href="../../Carlos/meus-produtos.html"><i class="bi bi-arrow-left"></i><span>Voltar a tela de produtos</span></a></button>
+                    <button><a href="#"><i class="bi bi-arrow-left"></i><span>Fazer mais alterações</span></a></button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-container">
+            <div class="logo">
+                <img src="logo.png" alt="Logo">
+            </div>
+            <div class="footer-links">
+                <div class="column">
+                    <h3><span>Institucional</h3>
+                    <ul>
+                        <li><a href="#">Acessibilidade</a></li>
+                        <li><a href="#">Gerenciamento de cookies</a></li>
+                        <li><a href="#">Termos e condições</a></li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>Comprar</h3>
+                    <ul>
+                        <li><a href="../../Vitor/tela_filtros/filtros.html">Veículos novos</a></li>
+                        <li><a href="../../Vitor/tela_filtros/filtros.html">Veículos semi-novos</a></li>
+                        <li><a href="../../Vitor/tela_filtros/filtros.html">Veículos usados</a></li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>Novidades</h3>
+                    <ul>
+                        <li><a href="../../Vitor/tela_inicial/index.html">Os mais populares</a></li>
+                        <li><a href="../../Vitor/tela_inicial/index.html">Promoções</a></li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>Ajuda</h3>
+                    <ul>
+                        <li><a href="../../Maria/cadastroPess/cadastroPess.html">Criar conta</a></li>
+                        <li><a href="../../Julia/index.html">Logar conta</a></li>
+                        <li><a href="../../Carlos/perfil.html">Meu perfil</a></li>
+                        <li><a href="../../Nathan/TelaDeSuporte/teladesuporte.html">Suporte</a></li>
+                        <li><a href="../../Hiago/codigoFinal/telaAdicionarProduto.html">Vender veículo</a></li>
+                        <li><a href="#">Contato: +55 (69) 012345678</a></li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3></h3>
+                    <ul>
+                        <li><a href="#"></a></li>
+                        <li><a href="#"></a></li>
+                        <li><a href="#"></a></li>
+                        <li><a href="#"></a></li>
+                        <li><a href="#"></a></li>
+                        <li><a href="#"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024–2025 Webcars do Brasil Ltda. Todos os direitos do site reservado</p>
+        </div>
+    </footer>
+    <script src="js/scriptAdicionarImagem.js"></script>
+    <script src="js/ScriptDropDown.js"></script>
+    <script src="js/scriptCampoIpva.js"></script>
+    <script src="js/scriptApresentarTela.js"></script>
+    <script src="js/scriptTratamentoDeDados.js"></script>
+    <script src="../../Vitor/header/header.js"></script>
+</body>
+
+</html>
