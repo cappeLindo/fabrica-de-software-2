@@ -6,6 +6,7 @@ import styles from './perfil.module.css';
 const Perfil = () => {
     const [isModalVisivel, setModalVisivel] = useState(false);
     const [logicPerfil, setLogicPerfil] = useState(true);
+    const [profileImage, setProfileImage] = useState(null); // Estado para armazenar a imagem de perfil
 
     const handleExcluirClick = () => {
         setModalVisivel(true);
@@ -17,6 +18,22 @@ const Perfil = () => {
 
     const handleConcluirClick = () => {
         setModalVisivel(false);
+    };
+
+    // Função para lidar com a seleção de imagem
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setProfileImage(imageUrl);
+        }
+    };
+
+    // Função para disparar o clique no input de arquivo
+    const handleImageClick = () => {
+        if (!logicPerfil) { // Só permite selecionar imagem no modo de edição
+            document.getElementById('imageInput').click();
+        }
     };
 
     return (
@@ -38,7 +55,29 @@ const Perfil = () => {
             <div className={styles.container}>
                 <aside className={styles.barraLateral}>
                     <div className={styles.perfil1}>
-                        <i className="bi bi-person-circle"></i>
+                        {/* Input oculto para seleção de imagem */}
+                        <input
+                            type="file"
+                            id="imageInput"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            onChange={handleImageChange}
+                        />
+                        {/* Exibe a imagem ou o ícone padrão */}
+                        {profileImage ? (
+                            <img
+                                src={profileImage}
+                                alt="Foto de perfil"
+                                className={styles.profileImage}
+                                onClick={handleImageClick}
+                            />
+                        ) : (
+                            <i
+                                className="bi bi-person-circle"
+                                onClick={handleImageClick}
+                                style={{ cursor: !logicPerfil ? 'pointer' : 'default' }}
+                            ></i>
+                        )}
                         <button 
                             className={logicPerfil ? styles.botaoEditar : styles.botaoEditarNclick} 
                             disabled={!logicPerfil} 
@@ -50,7 +89,7 @@ const Perfil = () => {
                     <div className={styles.menu}>
                         <ul className={styles.ul}>
                             <li>
-                            <Link href="/TelaDesejos">
+                                <Link href="/TelaDesejos">
                                     <button className={styles.botaoMenu}>Lista de desejo</button>
                                 </Link>
                                 <Link href="/MeusAlertas">
