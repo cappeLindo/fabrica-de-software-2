@@ -6,6 +6,7 @@ import styles from './cadastroClient.module.css'
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
+import valorUrl from "../../../rotaUrl";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -19,6 +20,17 @@ export default function RegisterForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordChek, setShowPasswordChek] = useState(false)
+  const [file, setFile] = useState(null); // Imagem selecionada
+  const [previewUrl, setPreviewUrl] = useState("/images/logo.png"); // URL para prévia
+  const [modalOpen, setModalOpen] = useState(false); // Controle da modal
+
+  const handleImageChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreviewUrl(URL.createObjectURL(selectedFile));
+    }
+  };
 
   const formatCPF = (value) => {
     return value
@@ -69,12 +81,46 @@ export default function RegisterForm() {
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
+    if (!validate()) return;
+
+    try {
+      const form = new FormData();
+      form.append("nome", formData.nome);
+      form.append("email", formData.email);
+      form.append("cpf", formData.cpf.replace(/\D/g, ""));
+      form.append("telefone", formData.telefone);
+      form.append("senha", formData.senha);
+
+      if (file) {
+        form.append("imagem", file);
+      }
+
+
+      const response = await fetch(valorUrl + "/cliente", {
+        method: "POST",
+        body: form,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Tenta extrair mensagem de erro vinda da API
+        const errorMessage = data?.message || data?.erro || "Erro ao cadastrar cliente.";
+        throw new Error(errorMessage);
+      }
+
+      alert(data.message || "Cadastro realizado com sucesso!");
       router.push("/");
+
+    } catch (error) {
+      console.error("Erro ao cadastrar cliente:", error);
+      alert(error.message || "Erro inesperado ao cadastrar.");
     }
+
   };
+
 
   return (
     <div className={styles.containerCadastro}>
@@ -97,6 +143,28 @@ export default function RegisterForm() {
           <h2>Crie sua conta</h2>
           <form onSubmit={handleSubmit} className={styles.formulario}>
             <div className={styles.conteudoFormulario}>
+              {modalOpen && (
+                <div className={styles.modalOverlay}>
+                  <div className={styles.modal}>
+                    <h3>Selecionar Imagem</h3>
+                    <input type="file" accept="image/*" onChange={handleImageChange} />
+                    {previewUrl && (
+                      <div className={styles.previewContainer}>
+                        <Image src={previewUrl} alt="Prévia" width={150} height={150} />
+                      </div>
+                    )}
+                    <div className={styles.modalButtons}>
+                      <button type="button" onClick={() => setModalOpen(false)}>Confirmar</button>
+                      <button type="button" onClick={() => {
+                        setFile(null);
+                        setPreviewUrl("/images/logo.png");
+                        setModalOpen(false);
+                      }}>Cancelar</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className={styles.containerInput}>
                 <label>Nome:</label>
                 <input
@@ -163,6 +231,13 @@ export default function RegisterForm() {
                   <button type="button" onClick={() => setShowPasswordChek(!showPasswordChek)}>{showPasswordChek ? <Eye /> : <EyeOff />}</button>
                 </div>
               </div>
+              <div className={styles.containerInput} id={styles.containerImagem}>
+                <button type="button" onClick={() => setModalOpen(true)} className={styles.buttonImagem}>
+                  Adicionar imagem de perfil
+                </button>
+              </div>
+
+
               <div className={styles.btnContainer}>
                 <button type="submit" className={styles.buttonSubmit}>Criar Conta</button>
                 <div className={styles.containerLinks}>
