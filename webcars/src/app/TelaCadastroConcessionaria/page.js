@@ -5,153 +5,172 @@ import { useRouter } from "next/navigation";
 import styles from './cadastroConcessionaria.module.css';
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, TestTube } from "lucide-react";
+import valorUrl from "../../../rotaUrl";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
-    nome: "",
-    email: "",
-    cnpj: "",
-    telefone: "",
-    cep: "",
-    rua: "",
-    bairro: "",
-    cidade: "",
-    estado: "",
-    senha: "",
-    confirmarSenha: "",
+    nome: "", email: "", cnpj: "", telefone: "",
+    cep: "", rua: "", bairro: "", cidade: "",
+    estado: "", senha: "", confirmarSenha: "",
   });
+
   const [errors, setErrors] = useState({});
   const [cnpjValido, setCnpjValido] = useState(false);
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordChek, setShowPasswordChek] = useState(false);
+  const [file, setFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("/images/logo.png");
+  const [modalOpen, setModalOpen] = useState(false);
+  const router = useRouter();
 
-  // Função para formatar CNPJ
-  const formatCNPJ = (value) => {
-    return value
-      .replace(/\D/g, "")
+  const formatCNPJ = (value) =>
+    value.replace(/\D/g, "")
       .replace(/^(\d{2})(\d)/, "$1.$2")
       .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
       .replace(/\.(\d{3})(\d)/, ".$1/$2")
       .replace(/(\d{4})(\d)/, "$1-$2")
       .substring(0, 18);
-  };
 
-  // Função para validar CNPJ
   const validateCNPJ = (cnpj) => {
-    // Remove caracteres não numéricos
     cnpj = cnpj.replace(/\D/g, "");
-  
-    // Verifica se o CNPJ tem 14 dígitos e não são todos iguais
     if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) return false;
-  
-    // Função para calcular o dígito verificador
+
     const calcDigit = (slice, weights) => {
-      const sum = slice.split("").reduce((acc, curr, idx) => acc + parseInt(curr) * weights[idx], 0);
+      const sum = slice.split("").reduce((acc, curr, idx) =>
+        acc + parseInt(curr) * weights[idx], 0);
       const mod = sum % 11;
       return mod < 2 ? 0 : 11 - mod;
     };
-  
-    // Pesos para o primeiro dígito verificador
-    const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-    // Pesos para o segundo dígito verificador
-    const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-  
-    // Calcula o primeiro dígito verificador
-    const firstDigit = calcDigit(cnpj.slice(0, 12), weights1);
-    // Calcula o segundo dígito verificador
-    const secondDigit = calcDigit(cnpj.slice(0, 13), weights2);
-  
-    // Verifica se os dígitos calculados são iguais aos dígitos do CNPJ
-    return cnpj[12] == firstDigit && cnpj[13] == secondDigit;
+
+    const w1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    const w2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    const d1 = calcDigit(cnpj.slice(0, 12), w1);
+    const d2 = calcDigit(cnpj.slice(0, 13), w2);
+
+    return cnpj[12] == d1 && cnpj[13] == d2;
   };
 
-  // Função para formatar telefone
-  const formatTelefone = (value) => {
-    return value
-      .replace(/\D/g, "")
+  const formatTelefone = (value) =>
+    value.replace(/\D/g, "")
       .replace(/(\d{2})(\d)/, "($1) $2")
       .replace(/(\d{5})(\d{1,4})$/, "$1-$2");
-  };
 
-  // Função para formatar CEP
-  const formatCEP = (value) => {
-    return value
-      .replace(/\D/g, "")
+  const formatCEP = (value) =>
+    value.replace(/\D/g, "")
       .replace(/^(\d{5})(\d)/, "$1-$2")
       .substring(0, 9);
-  };
 
-  // Função para buscar endereço pelo CEP usando ViaCEP
   const buscarEnderecoPorCEP = async (cep) => {
     cep = cep.replace(/\D/g, "");
     if (cep.length === 8) {
       try {
-        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-        const data = await response.json();
+        const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await res.json();
         if (!data.erro) {
-          setFormData((prev) => ({
+          setFormData(prev => ({
             ...prev,
-            rua: data.logradouro,
-            bairro: data.bairro,
-            cidade: data.localidade,
-            estado: data.uf,
+            rua: data.logradouro, bairro: data.bairro,
+            cidade: data.localidade, estado: data.uf
           }));
-        } else {
-          setErrors((prev) => ({ ...prev, cep: "CEP não encontrado" }));
-        }
-      } catch (error) {
-        console.error("Erro ao buscar CEP:", error);
-        setErrors((prev) => ({ ...prev, cep: "Erro ao buscar CEP" }));
+        } else setErrors(prev => ({ ...prev, cep: "CEP não encontrado" }));
+      } catch {
+        setErrors(prev => ({ ...prev, cep: "Erro ao buscar CEP" }));
       }
     }
   };
 
-  // Função para validar o formulário
   const validate = () => {
-    let newErrors = {};
-
+    const newErrors = {};
     if (!formData.nome) newErrors.nome = "Nome é obrigatório";
     if (!formData.email.includes("@")) newErrors.email = "Email inválido";
     if (!validateCNPJ(formData.cnpj)) newErrors.cnpj = "CNPJ inválido";
     if (formData.telefone.replace(/\D/g, "").length !== 11) newErrors.telefone = "Telefone inválido";
     if (formData.cep.replace(/\D/g, "").length !== 8) newErrors.cep = "CEP inválido";
     if (!/(?=.*[A-Z])(?=.*\d{3,})(?=.*[!@#$%^&*])/.test(formData.senha))
-      newErrors.senha = "A senha deve conter pelo menos 3 números, 1 caractere especial e 1 letra maiúscula";
+      newErrors.senha = "A senha deve conter ao menos 1 maiúscula, 3 números e 1 símbolo";
     if (formData.senha !== formData.confirmarSenha)
-      newErrors.confirmarSenha = "As senhas não coincidem";
+      newErrors.confirmarSenha = "Senhas não coincidem";
+    if (!file) newErrors.imagem = "A imagem é obrigatória";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Função para enviar o formulário
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      router.push("/");
+    if (!validate()) return;
+
+    try {
+      const formDataToSend = new FormData();
+      const enderecoRes = await fetch(`${valorUrl}/endereco`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cep: formData.cep.replace(/\D/g, ""),
+          rua: formData.rua, bairro: formData.bairro,
+          cidade: formData.cidade, estado: formData.estado
+        })
+      });
+
+      if (!enderecoRes.ok) throw new Error("Erro ao cadastrar endereço");
+
+      const result = await enderecoRes.json();
+      const endereco_id = result.id || result.endereco_id; // Ajuste conforme a resposta real
+
+
+      formDataToSend.append("nome", formData.nome);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("cnpj", formData.cnpj.replace(/\D/g, ""));
+      formDataToSend.append("telefone", formData.telefone);
+      formDataToSend.append("cep", formData.cep.replace(/\D/g, ""));
+      formDataToSend.append("rua", formData.rua);
+      formDataToSend.append("bairro", formData.bairro);
+      formDataToSend.append("cidade", formData.cidade);
+      formDataToSend.append("estado", formData.estado);
+      formDataToSend.append("senha", formData.senha);
+      formDataToSend.append("endereco_id", endereco_id);
+      formDataToSend.append("imagem", file);
+
+      const res = await fetch(`${valorUrl}/concessionaria`, {
+        method: "POST", body: formDataToSend,
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg || "Erro no cadastro");
+      }
+
+      alert("Concessionária cadastrada com sucesso!");
+      router.push("/telaLogin");
+
+    } catch (err) {
+      alert("Erro: " + err.message);
+      console.error(err);
     }
   };
 
-  // Função para gerar placeholder dinâmico
-  const getPlaceholder = (label) => {
-    return `Digite seu ${label.toLowerCase()}`;
-  };
-
-  // Função para verificar CNPJ em tempo real
   const handleCNPJChange = (e) => {
-    const cnpjFormatado = formatCNPJ(e.target.value);
-    setFormData({ ...formData, cnpj: cnpjFormatado });
-    setCnpjValido(validateCNPJ(cnpjFormatado));
+    const formatado = formatCNPJ(e.target.value);
+    setFormData({ ...formData, cnpj: formatado });
+    setCnpjValido(validateCNPJ(formatado));
   };
 
-  // Função para lidar com mudanças no CEP
   const handleCEPChange = (e) => {
-    const cepFormatado = formatCEP(e.target.value);
-    setFormData({ ...formData, cep: cepFormatado });
-    buscarEnderecoPorCEP(cepFormatado);
+    const formatado = formatCEP(e.target.value);
+    setFormData({ ...formData, cep: formatado });
+    buscarEnderecoPorCEP(formatado);
   };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const getPlaceholder = (label) => `Digite seu ${label.toLowerCase()}`;
 
   return (
     <div className={styles.containerCadastro}>
@@ -161,12 +180,34 @@ export default function RegisterForm() {
           <h3>Crie sua conta agora mesmo.</h3>
         </div>
       </div>
+
       <div className={styles.conteudoCadastro}>
         <div className={styles.campoImagem}>
-          <Image src={'/images/logo.png'} width={50} height={50} alt="Logo" />
+          <Image src="/images/logo.png" width={50} height={50} alt="Logo" />
           <p>Web Cars</p>
         </div>
+
         <div className={styles.containerFormulario}>
+          {modalOpen && (
+            <div className={styles.modalOverlay}>
+              <div className={styles.modal}>
+                <h3>Selecionar Imagem</h3>
+                <input type="file" accept="image/*" onChange={handleImageChange} />
+                {previewUrl && (
+                  <div className={styles.previewContainer}>
+                    <Image src={previewUrl} alt="Prévia" width={150} height={150} />
+                  </div>
+                )}
+                <div className={styles.modalButtons}>
+                  <button type="button" onClick={() => setModalOpen(false)}>Confirmar</button>
+                  <button type="button" onClick={() => {
+                    setFile(null); setPreviewUrl("/images/logo.png"); setModalOpen(false);
+                  }}>Cancelar</button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <h2>Crie sua conta</h2>
           <form onSubmit={handleSubmit} className={styles.formulario}>
             <div className={styles.conteudoFormulario}>
@@ -326,6 +367,13 @@ export default function RegisterForm() {
                 </div>
                 {errors.confirmarSenha && <span className={styles.error}>{errors.confirmarSenha}</span>}
               </div>
+              <div className={styles.containerInput} id={styles.containerImagem}>
+                <button type="button" onClick={() => setModalOpen(true)} className={styles.buttonImagem}>
+                  Adicionar imagem de perfil
+                </button>
+                {errors.imagem && <span className={styles.error}>{errors.imagem}</span>}
+              </div>
+
 
               {/* Botão de Envio e Links */}
               <div className={styles.btnContainer}>
