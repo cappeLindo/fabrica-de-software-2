@@ -127,7 +127,7 @@ const TelaDaConcessionaria = () => {
                 />
                 <p>{carro.nome}</p>
                 <button>
-                  <Link href={`/descricaoProduto/${carro.id}`}>Veja mais</Link>
+                  <Link href={`/descricaoProduto?id=${carro.id}`}>veja mais</Link>
                 </button>
               </div>
             ))
