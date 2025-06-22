@@ -94,12 +94,12 @@ export default function Home() {
               <div className={styles.cards_cs} key={concessionaria.id}>
                 <Image
                   src={concessionaria.imageUrl}
-                  alt={concessionaria.nome}
+                  alt={concessionaria.nome || 'Imagem da concessionária'}
                   width={100}
                   height={100}
                 />
                 <p>{concessionaria.nome}</p>
-                <button><Link href="/TelaDaConcessionaria">veja mais</Link></button>
+                <button><Link href={`/TelaDaConcessionaria?id=${concessionaria.id}`}>veja mais</Link></button>
               </div>
             ))}
           </div>
@@ -116,12 +116,12 @@ export default function Home() {
               <div className={styles.card_carros} key={carro.id}>
                 <Image
                   src={carro.imageUrl}
-                  alt={carro.nome}
+                  alt={carro.nome || 'Imagem do carro'}
                   width={160}
                   height={120}
                 />
                 <p>{carro.nome}</p>
-                <button><Link href="/descricaoProduto">veja mais</Link></button>
+                <button><Link href={`/descricaoProduto?id=${carro.id}`}>veja mais</Link></button>
               </div>
             ))}
           </div>
