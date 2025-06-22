@@ -16,7 +16,7 @@ const TelaDaConcessionaria = () => {
   const [error, setError] = useState(null);
   const [fotoConcessionaria, setFotoConcessionaria] = useState(null);
 
-  const API_BASE_URL = 'http://localhost:9000';
+  const API_BASE_URL = 'https://webcars.dev.vilhena.ifro.edu.br/api';
 
   useEffect(() => {
     if (!id) return;

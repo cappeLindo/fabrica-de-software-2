@@ -11,7 +11,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_BASE_URL = 'http://localhost:9000';
+  const API_BASE_URL = 'https://webcars.dev.vilhena.ifro.edu.br/api';
 
   useEffect(() => {
     const fetchData = async () => {
