@@ -1,5 +1,5 @@
 import "./globals.css";
-
+import { Suspense } from 'react';
 export const metadata = {
   title: "Web Cars", // Título da página
   description: "The best repository made by students on IFRO", // Descrição da página
@@ -11,10 +11,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
+
     <html lang="pt-br">
-      <body>
-        {children}
-      </body>
+      <Suspense fallback={<div>Carregando...</div>}>
+        <body>
+          {children}
+        </body>
+      </Suspense >
     </html>
+
   );
 }
