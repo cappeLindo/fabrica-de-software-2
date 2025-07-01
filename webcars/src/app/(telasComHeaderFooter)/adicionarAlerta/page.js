@@ -45,42 +45,7 @@ export default function AdicionarProduto() {
   }
 
   const handleSubmit = async (e) => {
-    /*e.preventDefault();
- 
-    const imagensProcessadas = await controleDadosImagem(imagensTemporarias);
- 
-    const selectedValues = {
-      marca: valorMarca,
-      aro: valorAro,
-      modelo: valorModelo,
-      combustivel: valorCombustivel,
-      condicao: valorCondicao,
-      categoria: valorCategoria,
-      cor: valorCor,
-      ano: valorAno,
-      valor: valorValor,
-      imagens: imagensProcessadas,
-      blindagem: valorBlindagem,
-      dataCompra: valorDataCompra,
-      nome: valorNome,
-      ipva: valorIpva,
-      dataIpva: valorDataIpva,
-      detalhes: valorDetalhes,
-      contatoEmail: valorContatoEmail,
-      contatoNumero: valorContatoNumero,
-      quilometragem: valorQuilometragem,
-      cambio: valorCambio,
-      numeroTelefone: valorContatoNumeroDeTelefone,
-      enderecoEmail: valorContatoEmailEndereco,
-    };
- 
-    try {
-      await axios.post(`http://localhost:8080/api/adicionar/adicionarCarro?nomeAnuncio=${selectedValues.nome}&anoCarro=${selectedValues.ano}&condicaoCarro=${selectedValues.condicao}&valorCarro=${selectedValues.valor}&ipvaPago=${selectedValues.ipva}&dataIpva=${selectedValues.dataIpva}&dataCompra=${selectedValues.dataCompra}&detalhesVeiculo=${selectedValues.detalhes}&blindagem=${selectedValues.blindagem}&idCor=${selectedValues.cor}&idAro=${selectedValues.aro}&idCategoria=${selectedValues.categoria}&idMarca=${selectedValues.marca}&idModelo=${selectedValues.modelo}&idCombustivel=${selectedValues.combustivel}&idCambio=${selectedValues.cambio}&idConcessionaria=1&nomeImagens=${selectedValues.imagens}`)
- 
-      alert("Dados enviado com sucesso!")
-    } catch (error) {
-      console.error("erro ao enviar dados" + error)
-    }*/
+
   };
 
   const reload = () => {

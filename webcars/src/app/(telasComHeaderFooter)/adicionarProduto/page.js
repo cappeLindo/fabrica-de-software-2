@@ -89,6 +89,24 @@ export default function AdicionarProduto() {
   };
 
   const handleSubmit = async (e) => {
+
+    const form = new FormData();
+    form.append("nome", valorNome)
+    form.append("ano", valorAno)
+    form.append("condicao", valorCondicao)
+    form.append("valor", valorValor)
+    form.append("ipva_pago", valorIpva)
+    form.append("data_ipva", valorDataIpva)
+    form.append("data_compra", valorDataCompra)
+    form.append("detalhes_veiculo", valorDetalhes)
+    form.append("blindagem", valorBlindagem)
+    form.append("cor_id", valorCor)
+    form.append("aro_id", valorAro)
+    form.append("categoria_id", valorCategoria)
+    form.append("marca_id", valorMarca)
+    form.append("modelo_id", valorModelo)
+    form.append("combustivel_id", valorCombustivel)
+    form.append("cambio_id", valorCambio)
     /*e.preventDefault();
 
     const imagensProcessadas = await controleDadosImagem(imagensTemporarias);

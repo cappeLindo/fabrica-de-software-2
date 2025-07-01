@@ -1,3 +1,5 @@
-const valorUrl = `https://webcars.dev.vilhena.ifro.edu.br/api`
-//const valorUrl = `http://localhost:9000`
+const valorUrl = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:9000'
+  : 'https://webcars.dev.vilhena.ifro.edu.br/api';
+console.log(valorUrl)
 export default valorUrl;

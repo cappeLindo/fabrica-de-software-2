@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { modelo } from "./dados.js";
 import styles from "./page.module.css";
 import Link from "next/link.js";
-
+import valorUrl from "../../../rotaUrl.js";
 const DropdownEspecial = ({
     label,
     valorMarca,
@@ -33,6 +33,21 @@ const DropdownEspecial = ({
         const resultado = verificarResultadoModelo(valorMarca, valorCategoria);
         setValores(resultado);
         setMensagem(resultado.length === 0 ? "Nenhum modelo encontrado para a marca e categoria selecionadas." : "");
+    }, [valorMarca, valorCategoria]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const resultado = await fetch(`${valorUrl}/${label}`);
+                const resultadoData = await resultado.json()
+                 console.log(resultadoData)
+                setValores(resultadoData);
+                setMensagem(resultado.length === 0 ? "Nenhum modelo encontrado para a marca e categoria selecionadas." : "");
+            } catch (error) {
+                console.error("Erro ao buscar dados:", error);
+            }
+        };
+        fetchData();
     }, [valorMarca, valorCategoria]);
 
     useEffect(() => {

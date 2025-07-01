@@ -1,53 +1,27 @@
 import React, { useState, useEffect } from "react";
-//import axios from "axios";
 import Link from "next/link.js";
-import { categoria, cambio, cor, marca, combustivel, aro } from "./dados.js"
 import styles from "./page.module.css";
+import valorUrl from "../../../rotaUrl.js";
 
 const Dropdown = ({ label, onValorSelecionado, dropdownAberto, setDropdownAberto }) => {
     const [valores, setValores] = useState([]);
     const [selecionado, setSelecionado] = useState("Escolha"); // Estado para exibir a opção escolhida
     const [selecionadoId, setSelecionadoId] = useState(null); // Estado para armazenar o ID do item selecionado
 
-    //Modo de dados estáticos
+
     useEffect(() => {
-        switch (label) {
-            case 'categoria':
-                setValores(categoria)
-                break;
-            case 'marca':
-                setValores(marca)
-                break;
-            case 'aro':
-                setValores(aro)
-                break;
-            case 'cor':
-                setValores(cor)
-                break;
-            case 'combustivel':
-                setValores(combustivel)
-                break;
-            case 'cambio':
-                setValores(cambio)
-                break;
-            default:
-                break;
-        }
-    })
-
-
-    /*useEffect(() => {
         const fetchData = async () => {
             try {
-                const resultado = await axios.get(`http://localhost:8080/api/${label}`);
-                console.log(resultado.data)
-                setValores(resultado.data);
+                const resultado = await fetch(`${valorUrl}/${label}`);
+                const resultadoData = await resultado.json()
+                 console.log(resultadoData)
+                setValores(resultadoData);
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
             }
         };
         fetchData();
-    }, [label]);*/
+    }, [label]);
 
     const handleSelecionar = (valor, nome) => {
         setSelecionado(nome);
@@ -88,11 +62,11 @@ const Dropdown = ({ label, onValorSelecionado, dropdownAberto, setDropdownAberto
                         <ul className={styles.dropdownLista}>
                             {valores.map((item) => (
                                 <li
-                                    key={item[`id_${label}`]}
-                                    className={`${styles.dropdownItem} ${selecionadoId === item[`id_${label}`] ? styles.itemSelecionado : ""}`}
-                                    onClick={() => handleSelecionar(item[`id_${label}`], item[`nome_${label}`])}
+                                    key={item[`id`]}
+                                    className={`${styles.dropdownItem} ${selecionadoId === item[`id`] ? styles.itemSelecionado : ""}`}
+                                    onClick={() => handleSelecionar(item[`id`], item[`nome`])}
                                 >
-                                    {item[`nome_${label}`]}
+                                    {item[`nome`]}
                                 </li>
                             ))}
                             <Link className={styles.linkclass} href='/adicionarOpcaoDropdown'><li key={`adicionarTabela${label}`} className={styles.linkOutro}>Outro</li></Link>

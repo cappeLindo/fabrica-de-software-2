@@ -13,11 +13,12 @@ export default function RootLayout({ children }) {
   return (
 
     <html lang="pt-br">
-      <Suspense fallback={<div>Carregando...</div>}>
-        <body>
+      <body>
+        <Suspense fallback={<div>Carregando...</div>}>
           {children}
-        </body>
-      </Suspense >
+        </Suspense >
+      </body>
+
     </html>
 
   );
