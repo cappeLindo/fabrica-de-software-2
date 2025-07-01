@@ -3,11 +3,12 @@ import React, { useState, useEffect } from "react";
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import styles from './perfil.module.css';
+import valorUrl from "../../../../rotaUrl.js";
 
 const Perfil = () => {
   const searchParams = useSearchParams();
   const userId = searchParams.get('id'); // ID do usuário via query param
-  const API_BASE_URL = 'https://webcars.dev.vilhena.ifro.edu.br/api';
+  const API_BASE_URL = valorUrl;
 
   const [isModalVisivel, setModalVisivel] = useState(false);
   const [logicPerfil, setLogicPerfil] = useState(true);

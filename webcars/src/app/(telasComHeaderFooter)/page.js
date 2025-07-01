@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
+import valorUrl from '../../../rotaUrl.js';
 
 export default function Home() {
   const [concessionarias, setConcessionarias] = useState([]);
@@ -11,7 +12,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_BASE_URL = 'https://webcars.dev.vilhena.ifro.edu.br/api';
+  const API_BASE_URL = valorUrl;
 
   useEffect(() => {
     const fetchData = async () => {

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from "./TelaDaConcessionaria.module.css";
+import valorUrl from "../../../../rotaUrl.js";
 
 const TelaDaConcessionaria = () => {
   const router = useRouter();
@@ -16,7 +17,7 @@ const TelaDaConcessionaria = () => {
   const [error, setError] = useState(null);
   const [fotoConcessionaria, setFotoConcessionaria] = useState(null);
 
-  const API_BASE_URL = 'https://webcars.dev.vilhena.ifro.edu.br/api';
+  const API_BASE_URL = valorUrl;
 
   useEffect(() => {
     if (!id) return;
