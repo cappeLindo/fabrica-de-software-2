@@ -4,12 +4,16 @@ import React, { useState, useEffect } from "react";
 import Dropdown from "@/components/funcoesDropdown/DropDown.js";
 import DropdownEspecial from "@/components/funcoesDropdown/DropDownEspecial.js";
 import controleDadosImagem from "@/components/funcoesDropdown/controleDeDadosImagem.js";
+import Cookies from "js-cookie";
+import valorUrl from "../../../../rotaUrl.js";
 import DropdownSimulado from "@/components/funcoesDropdown/dropDownCodicao.js";
 import Link from 'next/link'
 import styles from "./adicionarPodutos.module.css"
 import { formatarQuilometragem, validarAno, formatarValorMonetario, validarAnoCalendario } from "@/components/funcoesDropdown/controleDeDadosSimples.js";
 import { ArrowLeft } from "lucide-react";
 export default function AdicionarProduto() {
+
+  const [valorIdConcessionaria, setValorIdConcessionaria] = useState("")
   const [dropdownAberto, setDropdownAberto] = useState("");
   const [valorCor, setCor] = useState();
   const [valorMarca, setMarca] = useState();
@@ -38,13 +42,14 @@ export default function AdicionarProduto() {
   const [imagensTemporarias, setImagensTemporarias] = useState([]); // Array secundário para armazenar imagens temporariamente
   const [imagePreviews, setImagePreviews] = useState([]);
 
-  const [valorContatoNumeroDeTelefone, setValorContatoNumeroDeTelefone] = useState();
-  const [valorContatoEmailEndereco, setValorContatoEmailEndereco] = useState();
+  /*const [valorContatoNumeroDeTelefone, setValorContatoNumeroDeTelefone] = useState();
+  const [valorContatoEmailEndereco, setValorContatoEmailEndereco] = useState();*/
 
   const controleImagens = (event) => {
     const files = Array.from(event.target.files);
     setImagensTemporarias(files); // Armazena as imagens no array temporário
     handleFileChange(files);
+    setImagens(files)
   };
 
   const [showMensagem, setShowMensagem] = useState(false)
@@ -89,61 +94,80 @@ export default function AdicionarProduto() {
   };
 
   const handleSubmit = async (e) => {
+  e.preventDefault();
+  setErrorMessage(""); // limpa mensagem anterior
+
+  try {
+    // Validações básicas obrigatórias
+    if (!valorNome || !valorAno || !valorCondicao || !valorValor || !valorQuilometragem || !valorModelo) {
+      setErrorMessage("Preencha todos os campos obrigatórios.");
+      setTimeout(() => setErrorMessage(""), 2000);
+      return;
+    }
+
+    // Formatação dos valores
+    const valorConvertido = parseFloat(
+      valorValor.replace(/\s/g, "").replace("R$", "").replace(/\./g, "").replace(",", ".")
+    );
+    const quilometragemConvertida = parseInt(
+      valorQuilometragem.replace(/\./g, "").replace(",", "").replace(/\s/g, "").replace("km", ""), 10
+    );
+
+    if (isNaN(valorConvertido) || isNaN(quilometragemConvertida)) {
+      setErrorMessage("Informe valores válidos para 'Valor' e 'Quilometragem'.");
+      setTimeout(() => setErrorMessage(""), 2000);
+      return;
+    }
 
     const form = new FormData();
-    form.append("nome", valorNome)
-    form.append("ano", valorAno)
-    form.append("condicao", valorCondicao)
-    form.append("valor", valorValor)
-    form.append("ipva_pago", valorIpva)
-    form.append("data_ipva", valorDataIpva)
-    form.append("data_compra", valorDataCompra)
-    form.append("detalhes_veiculo", valorDetalhes)
-    form.append("blindagem", valorBlindagem)
-    form.append("cor_id", valorCor)
-    form.append("aro_id", valorAro)
-    form.append("categoria_id", valorCategoria)
-    form.append("marca_id", valorMarca)
-    form.append("modelo_id", valorModelo)
-    form.append("combustivel_id", valorCombustivel)
-    form.append("cambio_id", valorCambio)
-    /*e.preventDefault();
+    form.append("nome", valorNome);
+    form.append("ano", valorAno);
+    form.append("condicao", valorCondicao);
+    form.append("valor", valorConvertido);
+    form.append("ipva_pago", valorIpva);
+    form.append("data_ipva", valorDataIpva);
+    form.append("data_compra", valorDataCompra);
+    form.append("detalhes_veiculo", valorDetalhes);
+    form.append("blindagem", valorBlindagem);
+    form.append("quilometragem", quilometragemConvertida);
+    form.append("cor_id", valorCor);
+    form.append("aro_id", valorAro);
+    form.append("categoria_id", valorCategoria);
+    form.append("marca_id", valorMarca);
+    form.append("modelo_id", valorModelo);
+    form.append("combustivel_id", valorCombustivel);
+    form.append("cambio_id", valorCambio);
 
-    const imagensProcessadas = await controleDadosImagem(imagensTemporarias);
+    imagensTemporarias.forEach((imagem) => {
+      form.append("imagensCarro", imagem);
+    });
 
-    const selectedValues = {
-      marca: valorMarca,
-      aro: valorAro,
-      modelo: valorModelo,
-      combustivel: valorCombustivel,
-      condicao: valorCondicao,
-      categoria: valorCategoria,
-      cor: valorCor,
-      ano: valorAno,
-      valor: valorValor,
-      imagens: imagensProcessadas,
-      blindagem: valorBlindagem,
-      dataCompra: valorDataCompra,
-      nome: valorNome,
-      ipva: valorIpva,
-      dataIpva: valorDataIpva,
-      detalhes: valorDetalhes,
-      contatoEmail: valorContatoEmail,
-      contatoNumero: valorContatoNumero,
-      quilometragem: valorQuilometragem,
-      cambio: valorCambio,
-      numeroTelefone: valorContatoNumeroDeTelefone,
-      enderecoEmail: valorContatoEmailEndereco,
-    };
+    for (let pair of form.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
 
-    try {
-      await axios.post(`http://localhost:8080/api/adicionar/adicionarCarro?nomeAnuncio=${selectedValues.nome}&anoCarro=${selectedValues.ano}&condicaoCarro=${selectedValues.condicao}&valorCarro=${selectedValues.valor}&ipvaPago=${selectedValues.ipva}&dataIpva=${selectedValues.dataIpva}&dataCompra=${selectedValues.dataCompra}&detalhesVeiculo=${selectedValues.detalhes}&blindagem=${selectedValues.blindagem}&idCor=${selectedValues.cor}&idAro=${selectedValues.aro}&idCategoria=${selectedValues.categoria}&idMarca=${selectedValues.marca}&idModelo=${selectedValues.modelo}&idCombustivel=${selectedValues.combustivel}&idCambio=${selectedValues.cambio}&idConcessionaria=1&nomeImagens=${selectedValues.imagens}`)
+    const response = await fetch(`${valorUrl}/carro/${valorIdConcessionaria}`, {
+      method: "POST",
+      body: form,
+    });
 
-      alert("Dados enviado com sucesso!")
-    } catch (error) {
-      console.error("erro ao enviar dados" + error)
-    }*/
-  };
+    const data = await response.json();
+
+    if (!response.ok) {
+      const erro = data?.message || data?.erro || "Erro desconhecido ao tentar cadastrar.";
+      setErrorMessage(erro);
+      setTimeout(() => setErrorMessage(""), 2000);
+      return;
+    }
+
+    setShowMensagem(true);
+  } catch (err) {
+    console.error("Erro no envio:", err);
+    setErrorMessage("Erro ao enviar os dados. Verifique sua conexão ou tente novamente.");
+    setTimeout(() => setErrorMessage(""), 2000);
+  }
+};
+
 
   const reload = () => {
     window.location.reload();
@@ -159,8 +183,8 @@ export default function AdicionarProduto() {
 
   const valorIpva = checkboxValues.ipva ? '1' : '0';
   const valorBlindagem = checkboxValues.blindagem ? '1' : '0';
-  const valorContatoEmail = checkboxValues.contatoEmail ? '1' : '0';
-  const valorContatoNumero = checkboxValues.contatoNumero ? '1' : '0';
+  /*const valorContatoEmail = checkboxValues.contatoEmail ? '1' : '0';
+  const valorContatoNumero = checkboxValues.contatoNumero ? '1' : '0';*/
 
   const handleValorSelecionado = (label, valor) => {
     switch (label) {
@@ -195,6 +219,8 @@ export default function AdicionarProduto() {
   };
 
   useEffect(() => {
+    const meuValor = Cookies.get('id');
+    setValorIdConcessionaria(meuValor)
     if (showMensagem) {
       document.body.classList.add("no-scroll");
     } else {
@@ -401,7 +427,7 @@ export default function AdicionarProduto() {
                 </div>
               </div>
 
-              {errorMessage && <div className="error-message">{errorMessage}</div>}
+              {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
             </div>
 
             <div className={styles.campoDetalhes}>
@@ -428,7 +454,7 @@ export default function AdicionarProduto() {
               </div>
             </div>
 
-            <div className={styles.campoContato}>
+            {/*<div className={styles.campoContato}>
               <label className={styles.label}>
                 Contatos para negociações
               </label>
@@ -470,13 +496,10 @@ export default function AdicionarProduto() {
                   />
                 </div>
               </div>
-            </div>
+            </div>*/}
           </div>
         </div>
-        <div className={styles.campoBotoes}>
-          <button id={styles.btnAdicionarProduto} onClick={() => setShowMensagem(!showMensagem)} type="button">Enviar</button>
-        </div>
-
+        <button id={styles.btnAdicionarProduto} type="submit">Enviar</button>
       </form >
       {
         showMensagem &&

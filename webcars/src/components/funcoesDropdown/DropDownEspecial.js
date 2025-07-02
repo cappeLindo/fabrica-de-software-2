@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { modelo } from "./dados.js";
 import styles from "./page.module.css";
 import Link from "next/link.js";
 import valorUrl from "../../../rotaUrl.js";
@@ -15,40 +14,34 @@ const DropdownEspecial = ({
     const [selecionado, setSelecionado] = useState("Escolha");
     const [mensagem, setMensagem] = useState("");
 
-    const verificarResultadoModelo = (valorMarca, valorCategoria) => {
-        if (!valorCategoria && !valorMarca) {
-            return modelo;
-        } else if (!valorCategoria) {
-            return modelo.filter((mol) => mol.marca_id_marca === valorMarca);
-        } else if (!valorMarca) {
-            return modelo.filter((mol) => mol.categoria_id_categoria === valorCategoria);
-        } else {
-            return modelo.filter(
-                (mol) => mol.marca_id_marca === valorMarca && mol.categoria_id_categoria === valorCategoria
-            );
-        }
-    };
-
-    useEffect(() => {
-        const resultado = verificarResultadoModelo(valorMarca, valorCategoria);
-        setValores(resultado);
-        setMensagem(resultado.length === 0 ? "Nenhum modelo encontrado para a marca e categoria selecionadas." : "");
-    }, [valorMarca, valorCategoria]);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const resultado = await fetch(`${valorUrl}/${label}`);
-                const resultadoData = await resultado.json()
-                 console.log(resultadoData)
-                setValores(resultadoData);
-                setMensagem(resultado.length === 0 ? "Nenhum modelo encontrado para a marca e categoria selecionadas." : "");
+                const resultadoData = await resultado.json();
+
+                // Filtra depois que os dados chegam
+                const resultadoFiltrado = verificarResultadoModelo(valorMarca, valorCategoria, resultadoData);
+
+                setValores(resultadoFiltrado);
+                setMensagem(Array.isArray(resultadoData) && resultadoData.length === 0
+                    ? "Nenhum modelo encontrado para a marca e categoria selecionadas."
+                    : ""
+                );
+
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
             }
         };
         fetchData();
     }, [valorMarca, valorCategoria]);
+
+    const verificarResultadoModelo = (marca, categoria, dados) => {
+        if (!categoria && !marca) return dados;
+        if (!categoria) return dados.filter((d) => d.marca_id === marca);
+        if (!marca) return dados.filter((d) => d.categoria_id === categoria);
+        return dados.filter((d) => d.marca_id === marca && d.categoria_id === categoria);
+    };
 
     useEffect(() => {
         setSelecionado("Escolha");
@@ -100,11 +93,11 @@ const DropdownEspecial = ({
                         <ul className={styles.dropdownLista}>
                             {valores.map((item) => (
                                 <li
-                                    key={item[`id_${label}`]}
-                                    className={`${styles.dropdownItem} ${selecionado === item[`nome_${label}`] ? styles.itemSelecionado : ""}`}
-                                    onClick={() => handleSelecionar(item[`id_${label}`], item[`nome_${label}`])}
+                                    key={item[`${label}_id`]}
+                                    className={`${styles.dropdownItem} ${selecionado === item[`${label}_nome`] ? styles.itemSelecionado : ""}`}
+                                    onClick={() => handleSelecionar(item[`${label}_id`], item[`${label}_nome`])}
                                 >
-                                    {item[`nome_${label}`]}
+                                    {item[`${label}_nome`]}
                                 </li>
                             ))}
                             <Link className={styles.linkclass} href='/adicionarOpcaoDropdown'><li key={`adicionarTabela${label}`} className={styles.linkOutro}>Outro</li></Link>

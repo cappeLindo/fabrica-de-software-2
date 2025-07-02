@@ -14,7 +14,7 @@ const Dropdown = ({ label, onValorSelecionado, dropdownAberto, setDropdownAberto
             try {
                 const resultado = await fetch(`${valorUrl}/${label}`);
                 const resultadoData = await resultado.json()
-                 console.log(resultadoData)
+                //console.log(resultadoData)
                 setValores(resultadoData);
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
