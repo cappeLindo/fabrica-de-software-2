@@ -35,6 +35,7 @@ export default function LoginPage() {
             response = await fetch(`${valorUrl}/auth/concessionaria/login`, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
+                credentials: 'include',
                 body: JSON.stringify({ email, senha })
             });
 

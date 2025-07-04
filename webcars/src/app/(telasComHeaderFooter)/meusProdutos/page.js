@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import styles from './decricao-produto.module.css';
+import styles from './meus-produtos.module.css';
 
 const DescricaoProduto = () => {
   const searchParams = useSearchParams();

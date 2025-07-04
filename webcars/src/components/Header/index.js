@@ -4,9 +4,12 @@ import { useState, useEffect } from "react";
 import styles from "./header.module.css";
 import Image from "next/image";
 import Link from "next/link";
+import Cookies from "js-cookie";
 import { Menu } from "lucide-react";
 import CarrinhoImg from "/public/images/carrinho.png";
 import { usePathname } from "next/navigation"; // Importando usePathname para verificar a rota atual
+import valorUrl from "../../../rotaUrl";
+import { useRouter } from "next/navigation";
 
 const SelectCidades = () => {
   const [cidade, setCidade] = useState("Vilhena");
@@ -25,6 +28,8 @@ const SelectCidades = () => {
       console.log('Ocorreu algum erro:' + error)
     }
   }
+
+
 
   useEffect(() => {
     getCidades()
@@ -47,11 +52,59 @@ const SelectCidades = () => {
 };
 
 export default function Header() {
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname(); // Obtém a rota atual
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleLogout = async () => {
+    
+    try {
+
+      // Tenta como cliente
+      let response = await fetch(`${valorUrl}/auth/cliente/logout`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        Cookies.remove('token');
+        Cookies.remove('id');
+        Cookies.remove('userType')
+        toggleMenu();
+        // Autenticado como cliente
+        router.refresh();
+        router.push('/'); // ou para o painel do cliente
+        return;
+      }
+
+      // Se não deu, tenta como concessionária
+      response = await fetch(`${valorUrl}/auth/concessionaria/logout`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        Cookies.remove('token');
+        Cookies.remove('id');
+        Cookies.remove('userType')
+        toggleMenu();
+        // Autenticado como concessionária]
+        router.refresh();
+        router.push('/'); // ou para o painel da concessionária
+        return;
+      }
+
+      // Se chegou até aqui, quer dizer que os dois deram errado
+      alert("Não foi possível efetuar o login. Verifique suas credenciais.");
+
+    } catch (error) {
+      console.error(error);
+      alert("Ocorreu um erro na autenticação.");
+    }
   };
 
   return (
@@ -61,9 +114,12 @@ export default function Header() {
         rel="stylesheet"
       />
       <div className={styles.header}>
-        <div className={styles.logo}>
-          <Image src="/images/logo.png" alt="logo" width={60} height={60} />
-        </div>
+        <Link href="/">
+          <div className={styles.logo}>
+            <Image src="/images/logo.png" alt="logo" width={60} height={60} />
+          </div>
+        </Link>
+
 
         <div className={styles.menuIcon} onClick={toggleMenu}>
           <Menu color="black" size={33} />
@@ -74,7 +130,7 @@ export default function Header() {
           <Link href="adicionarAlerta">Criar Filtro</Link>
           <Link href="perfil">Perfil</Link>
           <Link href="Suporte">Ajuda</Link>
-          <Link href="#">Sair</Link>
+          <button onClick={handleLogout}>Sair</button>
         </nav>
 
         {/* Exibindo o botão Voltar somente se não estiver na Home */}
