@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useEstado } from '../../context/EstadoContext';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,6 +9,7 @@ import valorUrl from '../../../rotaUrl.js';
 
 export default function Home() {
   const [concessionarias, setConcessionarias] = useState([]);
+  const [enderecos, setEnderecos] = useState([]);
   const [carros, setCarros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,20 +25,17 @@ export default function Home() {
       setLoading(true);
       setError(null);
       try {
-        let urlConc = `${API_BASE_URL}/concessionaria`;
-        let urlCarros = `${API_BASE_URL}/carro`;
-        if (estadoSelecionado) {
-          // Para depuração: verifique o valor enviado
-          console.log('Estado selecionado para filtro:', estadoSelecionado);
-          urlConc += `?estado=${encodeURIComponent(estadoSelecionado)}`;
-          urlCarros += `?estado=${encodeURIComponent(estadoSelecionado)}`;
-        }
-
-        // Buscar concessionárias
-        const concessionariasResponse = await fetch(urlConc);
+        // Buscar todas as concessionárias
+        const concessionariasResponse = await fetch(`${API_BASE_URL}/concessionaria`);
         if (!concessionariasResponse.ok) throw new Error('Erro ao buscar concessionárias');
         const concessionariasData = await concessionariasResponse.json();
 
+        // Buscar todos os endereços
+        const enderecosResponse = await fetch(`${API_BASE_URL}/endereco`);
+        if (!enderecosResponse.ok) throw new Error('Erro ao buscar endereços');
+        const enderecosData = await enderecosResponse.json();
+
+        // Relacionar imagens às concessionárias
         const concessionariasWithImages = await Promise.all(
           (concessionariasData.dados || []).map(async (conc) => {
             try {
@@ -51,10 +49,11 @@ export default function Home() {
             }
           })
         );
-        setConcessionarias(concessionariasWithImages.slice(0, 5));
+        setConcessionarias(concessionariasWithImages);
+        setEnderecos(enderecosData.dados || []);
 
-        // Buscar carros
-        const carrosResponse = await fetch(urlCarros);
+        // Buscar carros normalmente (mantém filtro por estado se necessário)
+        const carrosResponse = await fetch(`${API_BASE_URL}/carro`);
         if (!carrosResponse.ok) throw new Error('Erro ao buscar carros');
         const carrosData = await carrosResponse.json();
 
@@ -71,7 +70,7 @@ export default function Home() {
             }
           })
         );
-        setCarros(carrosWithImages.slice(0, 6));
+        setCarros(carrosWithImages);
 
         setLoading(false);
       } catch (err) {
@@ -80,7 +79,28 @@ export default function Home() {
       }
     }
     fetchData();
-  }, [estadoSelecionado, API_BASE_URL]);
+  }, [API_BASE_URL]);
+
+  // Filtrar concessionárias pelo estado do endereço
+  const concessionariasFiltradas = useMemo(() => {
+    if (!estadoSelecionado) return concessionarias.slice(0, 5);
+    return concessionarias.filter(conc => {
+      const endereco = enderecos.find(e => e.id === conc.endereco_id);
+      return endereco && endereco.estado === estadoSelecionado;
+    }).slice(0, 5);
+  }, [concessionarias, enderecos, estadoSelecionado]);
+
+  // Filtrar carros pelo estado do endereço da concessionária
+  const carrosFiltrados = useMemo(() => {
+    if (!estadoSelecionado) return carros.slice(0, 6);
+    return carros.filter(carro => {
+      // Supondo que cada carro tem concessionaria_id
+      const conc = concessionarias.find(c => c.id === carro.concessionaria_id);
+      if (!conc) return false;
+      const endereco = enderecos.find(e => e.id === conc.endereco_id);
+      return endereco && endereco.estado === estadoSelecionado;
+    }).slice(0, 6);
+  }, [carros, concessionarias, enderecos, estadoSelecionado]);
 
   return (
     <div>
@@ -106,8 +126,8 @@ export default function Home() {
         {error && <p className={styles.error}>{error}</p>}
         {!loading && !error && (
           <div className={styles.fundo_cards}>
-            {concessionarias.length === 0 && <p>Nenhuma concessionária encontrada para este estado.</p>}
-            {concessionarias.map((concessionaria) => (
+            {concessionariasFiltradas.length === 0 && <p>Nenhuma concessionária encontrada para este estado.</p>}
+            {concessionariasFiltradas.map((concessionaria) => (
               <div className={styles.cards_cs} key={concessionaria.id}>
                 <Image
                   src={concessionaria.imageUrl}
@@ -129,8 +149,8 @@ export default function Home() {
         {error && <p className={styles.error}>{error}</p>}
         {!loading && !error && (
           <div className={styles.fundo_carros}>
-            {carros.length === 0 && <p>Nenhum carro encontrado para este estado.</p>}
-            {carros.map((carro) => (
+            {carrosFiltrados.length === 0 && <p>Nenhum carro encontrado para este estado.</p>}
+            {carrosFiltrados.map((carro) => (
               <div className={styles.card_carros} key={carro.id}>
                 <Image
                   src={carro.imageUrl}

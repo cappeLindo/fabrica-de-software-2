@@ -39,7 +39,7 @@ const SelectEstados = () => {
     >
       <option value="">Selecione um estado</option>
       {estados.map((estado) => (
-        <option value={estado.sigla} key={estado.id}>{estado.nome}</option>
+        <option value={estado.nome} key={estado.id}>{estado.nome}</option>
       ))}
     </select>
   );
