@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useEstado } from '../../context/EstadoContext';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
@@ -11,19 +12,34 @@ export default function Home() {
   const [carros, setCarros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { estadoSelecionado } = useEstado();
 
   const API_BASE_URL = valorUrl;
 
+  // (Removido: busca de estados, pois agora é global no Header)
+
+  // Buscar concessionárias e carros conforme o estado selecionado
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchData() {
+      setLoading(true);
+      setError(null);
       try {
+        let urlConc = `${API_BASE_URL}/concessionaria`;
+        let urlCarros = `${API_BASE_URL}/carro`;
+        if (estadoSelecionado) {
+          // Para depuração: verifique o valor enviado
+          console.log('Estado selecionado para filtro:', estadoSelecionado);
+          urlConc += `?estado=${encodeURIComponent(estadoSelecionado)}`;
+          urlCarros += `?estado=${encodeURIComponent(estadoSelecionado)}`;
+        }
+
         // Buscar concessionárias
-        const concessionariasResponse = await fetch(`${API_BASE_URL}/concessionaria`);
+        const concessionariasResponse = await fetch(urlConc);
         if (!concessionariasResponse.ok) throw new Error('Erro ao buscar concessionárias');
         const concessionariasData = await concessionariasResponse.json();
 
         const concessionariasWithImages = await Promise.all(
-          concessionariasData.dados.map(async (conc) => {
+          (concessionariasData.dados || []).map(async (conc) => {
             try {
               const imageResponse = await fetch(`${API_BASE_URL}/concessionaria/imagem/${conc.id}`);
               if (!imageResponse.ok) throw new Error('Erro ao buscar imagem');
@@ -38,12 +54,12 @@ export default function Home() {
         setConcessionarias(concessionariasWithImages.slice(0, 5));
 
         // Buscar carros
-        const carrosResponse = await fetch(`${API_BASE_URL}/carro`);
+        const carrosResponse = await fetch(urlCarros);
         if (!carrosResponse.ok) throw new Error('Erro ao buscar carros');
         const carrosData = await carrosResponse.json();
 
         const carrosWithImages = await Promise.all(
-          carrosData.dados.map(async (carro) => {
+          (carrosData.dados || []).map(async (carro) => {
             try {
               const imagemResponse = await fetch(`${API_BASE_URL}/carro/imagem/${carro.id}`);
               if (!imagemResponse.ok) throw new Error('Erro ao buscar imagem');
@@ -62,10 +78,9 @@ export default function Home() {
         setError('Erro ao carregar dados.');
         setLoading(false);
       }
-    };
-
+    }
     fetchData();
-  }, []);
+  }, [estadoSelecionado, API_BASE_URL]);
 
   return (
     <div>
@@ -91,6 +106,7 @@ export default function Home() {
         {error && <p className={styles.error}>{error}</p>}
         {!loading && !error && (
           <div className={styles.fundo_cards}>
+            {concessionarias.length === 0 && <p>Nenhuma concessionária encontrada para este estado.</p>}
             {concessionarias.map((concessionaria) => (
               <div className={styles.cards_cs} key={concessionaria.id}>
                 <Image
@@ -113,6 +129,7 @@ export default function Home() {
         {error && <p className={styles.error}>{error}</p>}
         {!loading && !error && (
           <div className={styles.fundo_carros}>
+            {carros.length === 0 && <p>Nenhum carro encontrado para este estado.</p>}
             {carros.map((carro) => (
               <div className={styles.card_carros} key={carro.id}>
                 <Image

@@ -10,43 +10,37 @@ import CarrinhoImg from "/public/images/carrinho.png";
 import { usePathname } from "next/navigation"; // Importando usePathname para verificar a rota atual
 import valorUrl from "../../../rotaUrl";
 import { useRouter } from "next/navigation";
+import { useEstado } from '../../context/EstadoContext';
 
-const SelectCidades = () => {
-  const [cidade, setCidade] = useState("Vilhena");
-  const [cidades, setCidades] = useState([])
-
-  async function getCidades() {
-    try {
-      const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados/11/municipios')
-      if (!response.ok) {
-        throw new Error("Erro ao buscar dados:" + response.statusText);
-
-      }
-      const data = await response.json();
-      setCidades(data)
-    } catch (error) {
-      console.log('Ocorreu algum erro:' + error)
-    }
-  }
-
-
+const SelectEstados = () => {
+  const { estadoSelecionado, setEstadoSelecionado } = useEstado();
+  const [estados, setEstados] = useState([]);
 
   useEffect(() => {
-    getCidades()
-  }, [])
+    async function fetchEstados() {
+      try {
+        const res = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
+        if (!res.ok) throw new Error('Erro ao buscar estados');
+        const data = await res.json();
+        setEstados(data);
+      } catch (err) {
+        setEstados([]);
+      }
+    }
+    fetchEstados();
+  }, []);
 
   return (
     <select
-      name="cidades"
+      name="estados"
       className={styles.cidades}
-      value={cidade}
-      onChange={(e) => setCidade(e.target.value)}
+      value={estadoSelecionado}
+      onChange={e => setEstadoSelecionado(e.target.value)}
     >
-      {
-        cidades.map((cidade) =>
-          <option value={cidade.nome} key={`${cidade.nome}_key`}>{cidade.nome}</option>
-        )
-      }
+      <option value="">Selecione um estado</option>
+      {estados.map((estado) => (
+        <option value={estado.sigla} key={estado.id}>{estado.nome}</option>
+      ))}
     </select>
   );
 };
@@ -142,7 +136,7 @@ export default function Header() {
 
         <div className={styles.localRegiao}>
           <i className="bi bi-geo-fill"></i>
-          <SelectCidades />
+          <SelectEstados />
         </div>
 
         <div className={styles.barraPesquisa}>

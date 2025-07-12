@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Suspense } from 'react';
+import { EstadoProvider } from '../context/EstadoContext';
 export const metadata = {
   title: "Web Cars", // Título da página
   description: "The best repository made by students on IFRO", // Descrição da página
@@ -14,9 +15,11 @@ export default function RootLayout({ children }) {
 
     <html lang="pt-br">
       <body>
-        <Suspense fallback={<div>Carregando...</div>}>
-          {children}
-        </Suspense >
+        <EstadoProvider>
+          <Suspense fallback={<div>Carregando...</div>}>
+            {children}
+          </Suspense >
+        </EstadoProvider>
       </body>
 
     </html>

@@ -16,6 +16,7 @@ const TelaDaConcessionaria = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [fotoConcessionaria, setFotoConcessionaria] = useState(null);
+  const [endereco, setEndereco] = useState(null);
 
   const API_BASE_URL = valorUrl;
 
@@ -28,7 +29,18 @@ const TelaDaConcessionaria = () => {
         const resConcessionaria = await fetch(`${API_BASE_URL}/concessionaria/${id}`);
         if (!resConcessionaria.ok) throw new Error('Erro ao buscar concessionária');
         const dataConcessionaria = await resConcessionaria.json();
+
         setConcessionaria(dataConcessionaria.dados);
+
+        // Buscar endereço da concessionária
+        const enderecoId = dataConcessionaria.dados.endereco_id;
+        if (enderecoId) {
+          const resEndereco = await fetch(`${API_BASE_URL}/endereco/${enderecoId}`);
+          if (resEndereco.ok) {
+            const dataEndereco = await resEndereco.json();
+            setEndereco(dataEndereco.dados);
+          }
+        }
 
         // Imagem da concessionária
         const resImagem = await fetch(`${API_BASE_URL}/concessionaria/imagem/${id}`);
@@ -94,7 +106,7 @@ const TelaDaConcessionaria = () => {
           <h2>Sobre</h2>
           <div className={styles.conteudoSobre}>
             <p><strong>Nome:</strong> {concessionaria.nome}</p>
-            <p><strong>Localidade:</strong> {concessionaria.localidade || 'Porto Velho, RO'}</p>
+            <p><strong>Endereço:</strong> {endereco ? `${endereco.rua}, ${endereco.bairro}, ${endereco.cidade} - ${endereco.estado}` : 'Endereço não disponível'}</p>
             <p><strong>Horário:</strong> 08 às 20 horas</p>
             <p><strong>Telefone:</strong> {concessionaria.telefone}</p>
             <p><strong>Carros anunciados:</strong> {carros.length}</p>
