@@ -105,35 +105,44 @@
 }
 
 .cartaoProduto {
-    background-color: #FFFFFF;
-    width: 180px; /* Ajustado para caber melhor com 5 cards */
+    width: 200px;
     height: 220px;
+    background-color: #efefef;
     border-radius: 10px;
-    margin: auto;
     position: relative;
     box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
     text-align: center;
     display: block;
+    margin: 0;
 }
 
 .cartaoProduto img {
-    width: 180px; /* Ajustado para combinar com a nova largura do card */
+    width: 200px;
     height: 120px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
 
 .cartaoProduto p {
-    margin: 5px 0;
-    font-weight: bold;
+    margin-top: 1px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #575757;
+    min-height: 40px; /* garante um espaço mínimo para o nome */
+    overflow-wrap: break-word; /* quebra linha se precisar */
 }
 
 .cartaoProduto button {
-    background-color: #C63434;
-    color: white;
+    width: 120px;
+    height: 30px;
+    text-align: center;
+    margin: 12px auto 0 auto; /* Espaço pequeno acima do botão */
+    display: block;
     border: none;
-    padding: 8px 12px; 
     border-radius: 5px;
+    background-color: var(--corDetalhes);
+    color: var(--cor-barra-pesquisa);
+    font-size: 14px;
     cursor: pointer;
 }
 

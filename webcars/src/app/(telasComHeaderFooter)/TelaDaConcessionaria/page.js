@@ -50,7 +50,7 @@ const TelaDaConcessionaria = () => {
         }
 
         // Carros da concessionária
-        const resCarros = await fetch(`${API_BASE_URL}/carro?concessionaria_id=${id}`);
+        const resCarros = await fetch(`${API_BASE_URL}/carro/concessionaria/${id}`);
         if (!resCarros.ok) throw new Error('Erro ao buscar carros');
         const dataCarros = await resCarros.json();
 
@@ -138,7 +138,7 @@ const TelaDaConcessionaria = () => {
                   width={160}
                   height={120}
                 />
-                <p>{carro.nome}</p>
+                <p>{carro.carro_nome || carro.nome}</p>
                 <button>
                   <Link href={`/descricaoProduto?id=${carro.id}`}>veja mais</Link>
                 </button>
