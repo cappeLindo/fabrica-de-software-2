@@ -236,3 +236,29 @@
     font-size: 14px;
     padding: 10px;
 }
+
+.resultadosBusca {
+  position: absolute;
+  top: 65px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 550px;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  font-family: "Poppins", sans-serif;
+  padding: 10px;
+}
+
+.cardResultado {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.cardResultado:hover {
+  background-color: #f7f7f7;
+}
