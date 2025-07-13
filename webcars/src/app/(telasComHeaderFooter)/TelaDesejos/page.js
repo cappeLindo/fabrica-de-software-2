@@ -16,10 +16,6 @@ const telaDesjos = () => {
 
             <div className={style.container}>
                 <div className={style.fundoCarro}>
-                    <div className={style.cardCarros}>
-                        <Image src="/images/Plus.png" alt="imagePlus" width={70} height={70} className={style.imagemPlus}/>
-                        <a href="/adicionarProduto"><button className={style.bot}>Adicionar</button></a>
-                    </div>
 
                     {carros.map((carro, index) => (
                         <div key={index} className={style.cardCarros}>

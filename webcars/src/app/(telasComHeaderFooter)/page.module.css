@@ -131,7 +131,11 @@
     background-color: var(--corDeFundo);
     margin: auto;
     box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
-    
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
 }
 
 .cards_cs img { 
@@ -150,22 +154,23 @@
     font-family: "Poppins", sans-serif;
     font-weight: 500;
     color: rgb(46, 46, 46);
+    margin-bottom: auto;
 }
 
 .cards_cs button { 
     width: 100px;
     height: 30px;
     text-align: center;
-    margin: auto;
+    margin: 12px auto 12px auto;
     justify-content: center;
     display: block;
     border: none;
-    margin-top: 1rem;
     border-radius: 5px;
     background-color: var(--corDetalhes);
     color: var(--cor-barra-pesquisa);
     font-size: 14px;
     cursor: pointer;
+    align-self: center;
 }
 
 .fundo_carros { 
@@ -207,25 +212,25 @@
 
 .card_carros p {
     margin-top: 1px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #575757;
+  font-size: 14px;
+  font-weight: 600;
+  color: #575757;
+  min-height: 40px; /* garante um espaço mínimo para o nome */
+  overflow-wrap: break-word; /* quebra linha se precisar */
 }
 
 .card_carros button { 
-    width: 120px;
-    height: 30px;
-    text-align: center;
-    margin: auto;
-    justify-content: center;
-    display: block;
-    border: none;
-    margin-top: 1.5rem;
-    border-radius: 5px;
-    background-color: var(--corDetalhes);
-    color: var(--cor-barra-pesquisa);
-    font-size: 14px;
-    cursor: pointer;
+  width: 120px;
+  height: 30px;
+  text-align: center;
+  margin: 12px auto 0 auto; /* Espaço pequeno acima do botão */
+  display: block;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--corDetalhes);
+  color: var(--cor-barra-pesquisa);
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .card_carros a {

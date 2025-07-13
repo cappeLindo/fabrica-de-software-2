@@ -40,7 +40,6 @@ const Footer = () => {
               <li><Link className={styles.link} href="/TelaCadastroCliente">Criar conta</Link></li>
               <li><Link className={styles.link} href="/telaLogin">Logar conta</Link></li>
               <li><Link className={styles.link} href="/perfil">Meu perfil</Link></li>
-              <li><Link className={styles.link} href="/Suporte">Suporte</Link></li>
               <li><Link className={styles.link} href="/adicionarProduto">Vender veículo</Link></li>
               <li><Link className={styles.link} href="#">Contato: +55 (69) 012345678</Link></li>
             </ul>

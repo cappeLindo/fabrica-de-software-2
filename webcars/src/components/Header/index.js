@@ -123,7 +123,6 @@ export default function Header() {
         <nav className={`${styles.menuLateral} ${menuOpen ? styles.open : ""}`}>
           <Link href="adicionarAlerta">Criar Filtro</Link>
           <Link href="perfil">Perfil</Link>
-          <Link href="Suporte">Ajuda</Link>
           <button onClick={handleLogout}>Sair</button>
         </nav>
 
