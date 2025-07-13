@@ -17,25 +17,19 @@ export default function Home() {
 
   const API_BASE_URL = valorUrl;
 
-  // (Removido: busca de estados, pois agora é global no Header)
-
-  // Buscar concessionárias e carros conforme o estado selecionado
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       setError(null);
       try {
-        // Buscar todas as concessionárias
         const concessionariasResponse = await fetch(`${API_BASE_URL}/concessionaria`);
         if (!concessionariasResponse.ok) throw new Error('Erro ao buscar concessionárias');
         const concessionariasData = await concessionariasResponse.json();
 
-        // Buscar todos os endereços
         const enderecosResponse = await fetch(`${API_BASE_URL}/endereco`);
         if (!enderecosResponse.ok) throw new Error('Erro ao buscar endereços');
         const enderecosData = await enderecosResponse.json();
 
-        // Relacionar imagens às concessionárias
         const concessionariasWithImages = await Promise.all(
           (concessionariasData.dados || []).map(async (conc) => {
             try {
@@ -52,7 +46,7 @@ export default function Home() {
         setConcessionarias(concessionariasWithImages);
         setEnderecos(enderecosData.dados || []);
 
-        // Buscar carros normalmente (mantém filtro por estado se necessário)
+        // Buscar carros e associar primeira imagem corretamente
         const carrosResponse = await fetch(`${API_BASE_URL}/carro`);
         if (!carrosResponse.ok) throw new Error('Erro ao buscar carros');
         const carrosData = await carrosResponse.json();
@@ -60,10 +54,14 @@ export default function Home() {
         const carrosWithImages = await Promise.all(
           (carrosData.dados || []).map(async (carro) => {
             try {
-              const imagemResponse = await fetch(`${API_BASE_URL}/carro/imagem/${carro.id}`);
+              const idImagem = carro.imagens?.[0]; // primeira imagem do carro
+              if (!idImagem) throw new Error('Sem imagem');
+
+              const imagemResponse = await fetch(`${API_BASE_URL}/carro/imagem/${idImagem}`);
               if (!imagemResponse.ok) throw new Error('Erro ao buscar imagem');
               const imageBlob = await imagemResponse.blob();
               const imageUrl = URL.createObjectURL(imageBlob);
+
               return { ...carro, imageUrl };
             } catch (err) {
               return { ...carro, imageUrl: '/images/VW-Gol-lateral.jpg' };
@@ -71,17 +69,16 @@ export default function Home() {
           })
         );
         setCarros(carrosWithImages);
-
         setLoading(false);
       } catch (err) {
         setError('Erro ao carregar dados.');
         setLoading(false);
       }
     }
+
     fetchData();
   }, [API_BASE_URL]);
 
-  // Filtrar concessionárias pelo estado do endereço
   const concessionariasFiltradas = useMemo(() => {
     if (!estadoSelecionado) return concessionarias.slice(0, 5);
     return concessionarias.filter(conc => {
@@ -90,11 +87,9 @@ export default function Home() {
     }).slice(0, 5);
   }, [concessionarias, enderecos, estadoSelecionado]);
 
-  // Filtrar carros pelo estado do endereço da concessionária
   const carrosFiltrados = useMemo(() => {
     if (!estadoSelecionado) return carros.slice(0, 6);
     return carros.filter(carro => {
-      // Supondo que cada carro tem concessionaria_id
       const conc = concessionarias.find(c => c.id === carro.concessionaria_id);
       if (!conc) return false;
       const endereco = enderecos.find(e => e.id === conc.endereco_id);
@@ -154,11 +149,11 @@ export default function Home() {
               <div className={styles.card_carros} key={carro.id}>
                 <Image
                   src={carro.imageUrl}
-                  alt={carro.nome || 'Imagem do carro'}
+                  alt={carro.carro_nome || carro.nome || 'Imagem do carro'}
                   width={160}
                   height={120}
                 />
-                <p>{carro.nome}</p>
+                <p>{carro.carro_nome || carro.nome}</p>
                 <button><Link href={`/descricaoProduto?id=${carro.id}`}>veja mais</Link></button>
               </div>
             ))}

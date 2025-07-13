@@ -187,27 +187,27 @@
 }
 
 .card_carros { 
-    width: 220px;
-    height: 240px;
-    background-color: var(--corDeFundo);
+    width: 200px;
+    height: 220px;
+    background-color: #efefef;
     border-radius: 10px;
-    margin: auto;
     position: relative;
     box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
     text-align: center;
     display: block;
+    margin: 0;
 }
 
 .card_carros img { 
-    width: 220px;
-    height: 140px;
+    width: 200px;
+    height: 120px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
 
 .card_carros p {
-    margin-top: 1px; 
-    font-size: 16px;
+    margin-top: 1px;
+    font-size: 14px;
     font-weight: 600;
     color: #575757;
 }

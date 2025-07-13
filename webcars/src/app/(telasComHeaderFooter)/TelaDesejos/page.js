@@ -13,7 +13,6 @@ const telaDesjos = () => {
     return (
         <>
             <h1 className={style.titulo}>LISTA DE DESEJO</h1>
-            <button className={style.comp}>Compartilhar</button>
 
             <div className={style.container}>
                 <div className={style.fundoCarro}>

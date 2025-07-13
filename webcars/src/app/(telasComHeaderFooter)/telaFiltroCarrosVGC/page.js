@@ -94,7 +94,7 @@ const CarCard = ({ carro }) => {
       />
       <p>{carro.carro_nome}</p>
       <button>
-        <a href={`/descricaoProduto/${carro.id}`}>veja mais</a>
+        <a href={`/descricaoProduto?id=${carro.id}`}>veja mais</a>
       </button>
     </div>
   );
