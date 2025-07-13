@@ -57,7 +57,9 @@ const TelaDaConcessionaria = () => {
         const carrosComImagem = await Promise.all(
           dataCarros.dados.map(async (carro) => {
             try {
-              const resImg = await fetch(`${API_BASE_URL}/carro/imagem/${carro.id}`);
+              const idImagem = carro.imagens?.[0]; // igual à tela inicial
+              if (!idImagem) throw new Error('Sem imagem');
+              const resImg = await fetch(`${API_BASE_URL}/carro/imagem/${idImagem}`);
               if (!resImg.ok) throw new Error('Erro ao buscar imagem');
               const blob = await resImg.blob();
               const imageUrl = URL.createObjectURL(blob);
