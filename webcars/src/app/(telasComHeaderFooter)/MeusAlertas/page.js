@@ -3,8 +3,10 @@ import React from "react";
 import Link from 'next/link';
 import styles from './meusAlertas.module.css';
 import { Plus, Filter, Car } from 'lucide-react';
+import Cookies from "js-cookie";
 
 export default function MeusAlertas() {
+    const userId = Cookies.get('id');
     const itens = [
         { nome: 'Alerta 1', dataCriacao: '2025-02-01', dataAlteracao: '2025-02-10' },
         { nome: 'Alerta 2', dataCriacao: '2025-02-02', dataAlteracao: null },

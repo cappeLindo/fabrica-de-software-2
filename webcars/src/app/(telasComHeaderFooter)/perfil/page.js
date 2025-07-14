@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import styles from './perfil.module.css';
 import valorUrl from "../../../../rotaUrl.js";
+import Cookies from "js-cookie";
 
 const Perfil = () => {
   const searchParams = useSearchParams();
-  const userId = searchParams.get('id'); // ID do usuário via query param
+  const userId = Cookies.get('id');
   const API_BASE_URL = valorUrl;
 
   const [isModalVisivel, setModalVisivel] = useState(false);
@@ -27,17 +28,23 @@ const Perfil = () => {
     const fetchUserData = async () => {
       try {
         // Buscar dados do usuário
-        const resUser = await fetch(`${API_BASE_URL}/usuario/${userId}`);
+        const resUser = await fetch(`${API_BASE_URL}/cliente/${userId}`);
         if (!resUser.ok) throw new Error('Erro ao buscar dados do usuário');
         const dataUser = await resUser.json();
         setUserData(dataUser.dados);
+        console.log('Dados do usuário:', dataUser.dados);
 
         // Buscar imagem de perfil
-        const resImage = await fetch(`${API_BASE_URL}/usuario/imagem/${userId}`);
+        const resImage = await fetch(`${API_BASE_URL}/cliente/imagem/${userId}`);
         if (resImage.ok) {
           const blob = await resImage.blob();
           setProfileImage(URL.createObjectURL(blob));
         }
+
+        // const resEndereco= await fetch(`${API_BASE_URL}/endereco/${userId}`);
+        // if (resEndereco.ok) {
+        //   setUserData(dataUser.dados);
+        // }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -220,7 +227,7 @@ const Perfil = () => {
               <input 
                 type="text" 
                 placeholder="CPF/CNPJ" 
-                value={userData.cpf_cnpj || ''} 
+                value={userData.cpf || ''} 
                 onChange={(e) => handleInputChange(e, 'cpf_cnpj')} 
                 disabled={logicPerfil}
               />
@@ -240,7 +247,7 @@ const Perfil = () => {
               <input 
                 type="text" 
                 placeholder="+(00) 00 00000-0000" 
-                value={userData.telefones?.[0] || ''} 
+                value={userData.telefone || ''} 
                 onChange={(e) => handleInputChange(e, 'telefones', 0)} 
                 disabled={logicPerfil}
               />

@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import styles from "./header.module.css";
-import Image from "next/image";
-import Link from "next/link";
-import Cookies from "js-cookie";
-import { Menu } from "lucide-react";
-import CarrinhoImg from "/public/images/carrinho.png";
-import { usePathname, useRouter } from "next/navigation";
-import valorUrl from "../../../rotaUrl";
+import { useState, useEffect } from 'react';
+import styles from './header.module.css';
+import Image from 'next/image';
+import Link from 'next/link';
+import Cookies from 'js-cookie';
+import { Menu } from 'lucide-react';
+import CarrinhoImg from '/public/images/carrinho.png';
+import { usePathname, useRouter } from 'next/navigation';
+import valorUrl from '../../../rotaUrl';
 import { useEstado } from '../../context/EstadoContext';
 
 const SelectEstados = () => {
@@ -31,14 +31,16 @@ const SelectEstados = () => {
 
   return (
     <select
-      name="estados"
+      name='estados'
       className={styles.cidades}
       value={estadoSelecionado}
-      onChange={e => setEstadoSelecionado(e.target.value)}
+      onChange={(e) => setEstadoSelecionado(e.target.value)}
     >
-      <option value="">Selecione um estado</option>
+      <option value=''>Selecione um estado</option>
       {estados.map((estado) => (
-        <option value={estado.sigla} key={estado.id}>{estado.nome}</option>
+        <option value={estado.sigla} key={estado.id}>
+          {estado.nome}
+        </option>
       ))}
     </select>
   );
@@ -48,8 +50,14 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [busca, setBusca] = useState("");
+  const [busca, setBusca] = useState('');
   const [carros, setCarros] = useState([]);
+  const [userId, setUserId] = useState(Cookies.get('id') || null);
+
+  useEffect(() => {
+    const storedId = Cookies.get('id');
+    setUserId(storedId || null);
+  }, []);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -57,7 +65,7 @@ export default function Header() {
     try {
       let response = await fetch(`${valorUrl}/auth/cliente/logout`, {
         method: 'POST',
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${Cookies.get('token')}` },
         credentials: 'include',
       });
 
@@ -65,28 +73,33 @@ export default function Header() {
         Cookies.remove('token');
         Cookies.remove('id');
         Cookies.remove('userType');
+        setUserId(null);
         toggleMenu();
         router.refresh();
         router.push('/');
         return;
       }
 
-      response = await fetch(`${valorUrl}/auth/concessionaria/logout`, { method: 'POST' });
+      response = await fetch(`${valorUrl}/auth/concessionaria/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${Cookies.get('token')}` },
+      });
 
       if (response.ok) {
         Cookies.remove('token');
         Cookies.remove('id');
         Cookies.remove('userType');
+        setUserId(null);
         toggleMenu();
         router.refresh();
         router.push('/');
         return;
       }
 
-      alert("Não foi possível efetuar o login. Verifique suas credenciais.");
+      alert('Não foi possível efetuar o logout.');
     } catch (error) {
       console.error(error);
-      alert("Ocorreu um erro na autenticação.");
+      alert('Ocorreu um erro no logout.');
     }
   };
 
@@ -98,68 +111,67 @@ export default function Header() {
 
     try {
       const url = `${valorUrl}/carro/`;
-      console.log("Buscando carros em:", url);
+      console.log('Buscando carros em:', url);
 
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: Cookies.get('token') ? { Authorization: `Bearer ${Cookies.get('token')}` } : {},
+      });
 
       if (!res.ok) {
         throw new Error(`Erro ao buscar carros. Status: ${res.status}`);
       }
 
       const data = await res.json();
-
-      console.log("Resposta da API:", data);
+      console.log('Resposta da API:', data);
 
       const carrosArray = Array.isArray(data) ? data : data.dados || data.results || [];
-
       const carrosFiltrados = carrosArray.filter((carro) =>
         carro.carro_nome.toLowerCase().includes(termo.toLowerCase())
       );
 
       setCarros(carrosFiltrados);
     } catch (error) {
-      console.error("Erro ao buscar carros:", error);
+      console.error('Erro ao buscar carros:', error);
       setCarros([]);
     }
   };
 
   return (
     <>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+      <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css' rel='stylesheet' />
 
       <div className={styles.header}>
-        <Link href="/">
+        <Link href='/'>
           <div className={styles.logo}>
-            <Image src="/images/logo.png" alt="logo" width={60} height={60} />
+            <Image src='/images/logo.png' alt='logo' width={60} height={60} />
           </div>
         </Link>
 
         <div className={styles.menuIcon} onClick={toggleMenu}>
-          <Menu color="black" size={33} />
+          <Menu color='black' size={33} />
         </div>
 
-        <nav className={`${styles.menuLateral} ${menuOpen ? styles.open : ""}`}>
-          <Link href="adicionarAlerta">Criar Filtro</Link>
-          <Link href="perfil">Perfil</Link>
-          <Link href="Suporte">Ajuda</Link>
+        <nav className={`${styles.menuLateral} ${menuOpen ? styles.open : ''}`}>
+          <Link href='adicionarAlerta'>Criar Filtro</Link>
+          <Link href={userId ? `/perfil?id=${userId}` : '/telaLogin'}>Perfil</Link>
           <button onClick={handleLogout}>Sair</button>
         </nav>
 
-        {pathname !== "/" && (
-          <div className={`${styles.voltar} ${menuOpen ? styles.hidden : ""}`}>
-            <Link href="/">Voltar</Link>
+        {pathname !== '/' && (
+          <div className={`${styles.voltar} ${menuOpen ? styles.hidden : ''}`}>
+            <Link href='/'>Voltar</Link>
           </div>
         )}
 
         <div className={styles.localRegiao}>
-          <i className="bi bi-geo-fill"></i>
+          <i className='bi bi-geo-fill'></i>
           <SelectEstados />
         </div>
 
         <div className={styles.barraPesquisa}>
           <input
-            type="text"
-            placeholder="BUSCAR CARROS, MARCAS ETC..."
+            type='text'
+            placeholder='BUSCAR CARROS, MARCAS ETC...'
             value={busca}
             onChange={(e) => {
               const termo = e.target.value;
@@ -168,24 +180,24 @@ export default function Header() {
             }}
           />
           <button className={styles.lupa}>
-            <i className="bi bi-search"></i>
+            <i className='bi bi-search'></i>
           </button>
         </div>
 
         <div className={styles.entrarLogar}>
-          <Link href="/TelaCadastroCliente">Criar sua conta</Link>
-          <Link href="/telaLogin">Login</Link>
+          <Link href='/TelaCadastroCliente'>Criar sua conta</Link>
+          <Link href='/telaLogin'>Login</Link>
         </div>
 
         <div className={styles.perfilCarrinho}>
           <div className={styles.carrinho}>
             <Link href='/TelaDesejos' className={styles.perfil}>
-              <Image src={CarrinhoImg} alt="carrinho" width={50} height={50} />
+              <Image src={CarrinhoImg} alt='carrinho' width={50} height={50} />
             </Link>
           </div>
           <div className={styles.perfil}>
-            <Link href='/perfil' className={styles.linkPerfil}>
-              <i className="bi bi-person-circle"></i>
+            <Link href={userId ? `/perfil?id=${userId}` : '/telaLogin'} className={styles.linkPerfil}>
+              <i className='bi bi-person-circle'></i>
             </Link>
           </div>
         </div>
@@ -197,15 +209,17 @@ export default function Header() {
             carros.map((carro) => (
               <div key={carro.id} className={styles.cardResultado}>
                 <Link href={`/descricaoProduto?id=${carro.id}`}>
-                  <p><strong>{carro.carro_nome}</strong></p>
+                  <p>
+                    <strong>{carro.carro_nome}</strong>
+                  </p>
                 </Link>
               </div>
             ))
           ) : (
-            <p style={{ marginLeft: "1rem" }}>Nenhum carro encontrado.</p>
+            <p style={{ marginLeft: '1rem' }}>Nenhum carro encontrado.</p>
           )}
         </div>
       )}
     </>
   );
-}
+};

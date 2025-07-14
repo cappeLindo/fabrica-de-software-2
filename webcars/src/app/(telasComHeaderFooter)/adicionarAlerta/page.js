@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from "react";
 import Dropdown from "@/components/funcoesDropdown/DropDown.js";
 import DropdownEspecial from "@/components/funcoesDropdown/DropDownEspecial.js";
-import controleDadosImagem from "@/components/funcoesDropdown/controleDeDadosImagem.js";
 import DropdownSimulado from "@/components/funcoesDropdown/dropDownCodicao.js";
-import Link from 'next/link'
-import styles from "./adicionarFiltro.module.css"
+import Link from 'next/link';
+import styles from "./adicionarFiltro.module.css";
 import { formatarQuilometragem, validarAno, formatarValorMonetario, validarAnoCalendario } from "@/components/funcoesDropdown/controleDeDadosSimples.js";
 import { ArrowLeft } from "lucide-react";
+
 export default function AdicionarProduto() {
   const [dropdownAberto, setDropdownAberto] = useState("");
   const [valorCor, setCor] = useState();
@@ -32,20 +32,68 @@ export default function AdicionarProduto() {
   const [valorValorMaximo, setValorMaximo] = useState();
   const [valorValorMinimo, setValorMinimo] = useState();
   const [valorQuilometragem, setQuilometragem] = useState();
-
   const [exibirData, setExibirData] = useState(false);
-
-  const [showMensagem, setShowMensagem] = useState(false)
+  const [showMensagem, setShowMensagem] = useState(false);
 
   const apresentarDataVencimento = (event) => {
     setExibirData(event.target.checked);
     if (event.target.checked === false) {
       setDataIpva(null);
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    // Validação básica dos campos obrigatórios
+    if (!valorNome || !valorValorMinimo || !valorValorMaximo) {
+      alert('Por favor, preencha o nome do filtro e os valores mínimo e máximo.');
+      return;
+    }
+
+    // Monta o objeto com os dados do filtro conforme a API
+    const filtroAlerta = {
+      marca: valorMarca || null,
+      modelo: valorModelo || null,
+      aro: valorAro || null,
+      combustivel: valorCombustivel || null,
+      cor: valorCor || null,
+      condicao: valorCondicao || null,
+      cambio: valorCambio || null,
+      ano: valorAno || null,
+      dataCompra: valorDataCompra || null,
+      quilometragem: valorQuilometragem || null,
+      ipva: checkboxValues.ipva ? '1' : '0',
+      blindagem: checkboxValues.blindagem ? '1' : '0',
+      contatoEmail: checkboxValues.contatoEmail ? '1' : '0',
+      contatoNumero: checkboxValues.contatoNumero ? '1' : '0',
+      dataIpva: valorDataIpva || null,
+      nome: valorNome,
+      valorMinimo: valorValorMinimo,
+      valorMaximo: valorValorMaximo,
+    };
+
+    try {
+      const response = await fetch('https://webcars.dev.vilhena.ifro.edu.br/api/filtroAlerta', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(filtroAlerta),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erro ao salvar o filtro');
+      }
+
+      const result = await response.json();
+      console.log('Filtro salvo com sucesso:', result);
+      setShowMensagem(true); // Exibe mensagem de sucesso
+    } catch (error) {
+      console.error('Erro:', error.message);
+      alert(`Ocorreu um erro ao salvar o filtro: ${error.message}`);
+    }
   };
 
   const reload = () => {
@@ -59,11 +107,6 @@ export default function AdicionarProduto() {
       [name]: checked,
     }));
   };
-
-  const valorIpva = checkboxValues.ipva ? '1' : '0';
-  const valorBlindagem = checkboxValues.blindagem ? '1' : '0';
-  const valorContatoEmail = checkboxValues.contatoEmail ? '1' : '0';
-  const valorContatoNumero = checkboxValues.contatoNumero ? '1' : '0';
 
   const handleValorSelecionado = (label, valor) => {
     switch (label) {
@@ -292,10 +335,9 @@ export default function AdicionarProduto() {
           </div>
         </div>
         <div className={styles.campoBotoes}>
-          <button id={styles.btnAdicionarProduto} onClick={() => setShowMensagem(!showMensagem)} type="button">Criar alerta para esse filtro</button>
+          <button id={styles.btnAdicionarProduto} type="submit">Criar alerta para esse filtro</button>
         </div>
-
-      </form >
+      </form>
       {
         showMensagem &&
         <div className={styles.overlay}>
@@ -309,7 +351,7 @@ export default function AdicionarProduto() {
                   <div className={styles.arrowEtexto}>
                     <ArrowLeft size={20} />
                     <p>
-                      Voltar a tela inical
+                      Voltar a tela inicial
                     </p>
                   </div>
                 </Link>
@@ -323,12 +365,11 @@ export default function AdicionarProduto() {
                     </p>
                   </div>
                 </Link>
-
               </button>
             </div>
           </div>
         </div>
       }
-    </div >
+    </div>
   );
-};
+}
