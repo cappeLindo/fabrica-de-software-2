@@ -7,7 +7,7 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import valorUrl from '../../../rotaUrl.js';
 import { Heart } from "lucide-react";
-
+import Cookies from 'js-cookie';
 export default function Home() {
   const [concessionarias, setConcessionarias] = useState([]);
   const [enderecos, setEnderecos] = useState([]);
@@ -15,7 +15,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [favoritos, setFavoritos] = useState([]);  // <-- Estado para favoritos
-
+  const [typeUser, settypeUser] = useState(null);
   const { estadoSelecionado } = useEstado();
 
   const API_BASE_URL = valorUrl;
@@ -46,6 +46,8 @@ export default function Home() {
             }
           })
         );
+        const storedTypeUser = Cookies.get('typeUser');
+        settypeUser(storedTypeUser || null)
         setConcessionarias(concessionariasWithImages);
         setEnderecos(enderecosData.dados || []);
 
@@ -120,7 +122,7 @@ export default function Home() {
           </li>
           <li className={styles.menu_item}><Link href="/telaFiltroCarrosVGC">Catálogo 0Km</Link></li>
           <li className={styles.menu_item}><Link href="/telaFiltroCarrosVGC">Seminovos</Link></li>
-          <li className={styles.menu_item}><Link href="/adicionarProduto">Vender</Link></li>
+          <li className={styles.menu_item}>{typeUser && typeUser == 'concessionaria' ? <Link href="/adicionarProduto">Vender</Link> : <Link href='adicionarAlerta'>Criar Filtro</Link>}</li>
         </ul>
       </nav>
 

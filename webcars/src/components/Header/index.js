@@ -51,6 +51,7 @@ export default function Header() {
   const [busca, setBusca] = useState('');
   const [carros, setCarros] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [typeUser, settypeUser] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
   const [imagemPerfil, setImagemPerfil] = useState(null);
 
@@ -62,7 +63,8 @@ export default function Header() {
     setHasMounted(true);
     const storedId = Cookies.get('id');
     setUserId(storedId || null);
-
+    const storedTypeUser = Cookies.get('typeUser');
+    settypeUser(storedTypeUser || null)
     if (storedId) {
       fetch(`${valorUrl}/cliente/imagem/${storedId}`).then((res) => {
         if (res.ok) {
@@ -79,7 +81,7 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
-      let response = await fetch(`${valorUrl}/auth/cliente/logout`, {
+      let response = await fetch(`${valorUrl}/auth/${typeUser}/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${Cookies.get('token')}` },
         credentials: 'include',
@@ -88,25 +90,10 @@ export default function Header() {
       if (response.ok) {
         Cookies.remove('token');
         Cookies.remove('id');
-        Cookies.remove('userType');
+        Cookies.remove('typeUser');
         setUserId(null);
         toggleMenu();
-        router.refresh();
-        router.push('/');
-        return;
-      }
-
-      response = await fetch(`${valorUrl}/auth/concessionaria/logout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${Cookies.get('token')}` },
-      });
-
-      if (response.ok) {
-        Cookies.remove('token');
-        Cookies.remove('id');
-        Cookies.remove('userType');
-        setUserId(null);
-        toggleMenu();
+        window.location.reload(true);
         router.refresh();
         router.push('/');
         return;
@@ -170,7 +157,7 @@ export default function Header() {
           </div>
 
           <nav className={`${styles.menuLateral} ${menuOpen ? styles.open : ''}`}>
-            <Link href='adicionarAlerta'>Criar Filtro</Link>
+            {typeUser && typeUser == 'concessionaria' ? <Link href="/adicionarProduto">Vender</Link> : <Link href='adicionarAlerta'>Criar Filtro</Link>}
             <Link href={userId ? `/perfil?id=${userId}` : '/telaLogin'}>Perfil</Link>
             <button onClick={handleLogout}>Sair</button>
           </nav>
