@@ -1,4 +1,4 @@
-.main{
+.main {
     background-color: var(--corDeFundo);
 }
 
@@ -30,70 +30,64 @@
 }
 
 .menu_item {
-      position: relative;
+    position: relative;
 }
-  
+
 .menu_item .dropdown {
-      display: none;
-      position: absolute;
-      top: 110%; 
-      left: 50%;
-      transform: translateX(-50%);
-      border-radius: 15px;
-      justify-content: center;
-      text-align: center;
-      width: 120px;
-      background-color: white;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1;
+    display: none;
+    position: absolute;
+    top: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 15px;
+    justify-content: center;
+    text-align: center;
+    width: 120px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1;
 }
-  
-.menu_item {
-      position: relative;
-}
-  
+
 .dropdown {
-      display: none; 
-      position: absolute;
-      top: 100%; 
-      left: 50%;
-      transform: translateX(-50%);
-      border-radius: 15px;
-      justify-content: center;
-      text-align: center;
-      width: 120px;
-      background-color: white;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1;
-      margin-top: 15px; 
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 15px;
+    justify-content: center;
+    text-align: center;
+    width: 120px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    margin-top: 15px;
 }
-  
+
 .dropdown li {
     display: none;
-    
 }
-  
+
 .dropdown li a {
-      color: black;
-      text-decoration: none;
-      display: block;
-     
+    color: black;
+    text-decoration: none;
+    display: block;
 }
-  
+
 .dropdown li a:hover {
-      color: var(--corDetalhes);
-}
-  
-.menu_item a { 
-      color: rgb(0, 0, 0); 
-}
-  
-.menu_item > a:hover { 
     color: var(--corDetalhes);
 }
-  
-.carros_em_destaque { 
-    display:block;
+
+.menu_item a {
+    color: rgb(0, 0, 0);
+}
+
+.menu_item > a:hover {
+    color: var(--corDetalhes);
+}
+
+.carros_em_destaque {
+    display: block;
     color: rgb(105, 105, 105);
     margin: auto;
     text-align: center;
@@ -102,7 +96,7 @@
 }
 
 .destaque {
-    display:block;
+    display: block;
     color: rgb(105, 105, 105);
     margin: auto;
     text-align: center;
@@ -110,7 +104,7 @@
     font-size: 14px;
 }
 
-.fundo_cards { 
+.fundo_cards {
     width: 810px;
     padding-left: 5px;
     padding-right: 5px;
@@ -124,7 +118,7 @@
     border-radius: 10px;
 }
 
-.cards_cs { 
+.cards_cs {
     width: 150px;
     height: 190px;
     border-radius: 10px;
@@ -138,7 +132,7 @@
     position: relative;
 }
 
-.cards_cs img { 
+.cards_cs img {
     width: 80px;
     height: 80px;
     border-radius: 50%;
@@ -148,7 +142,7 @@
     margin-bottom: 0.8rem;
 }
 
-.cards_cs p { 
+.cards_cs p {
     font-size: 14px;
     text-align: center;
     font-family: "Poppins", sans-serif;
@@ -157,7 +151,7 @@
     margin-bottom: auto;
 }
 
-.cards_cs button { 
+.cards_cs button {
     width: 100px;
     height: 30px;
     text-align: center;
@@ -173,7 +167,7 @@
     align-self: center;
 }
 
-.fundo_carros { 
+.fundo_carros {
     width: 100%;
     max-width: 716px;
     height: 550px;
@@ -186,12 +180,12 @@
     justify-content: space-between;
     padding-left: 10px;
     padding-right: 10px;
-    padding-top: 14px; /* Espaço pequeno no topo */
+    padding-top: 14px;
     margin-bottom: 6rem;
     box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
 }
 
-.card_carros { 
+.card_carros {
     width: 200px;
     height: 220px;
     background-color: #efefef;
@@ -203,34 +197,35 @@
     margin: 0;
 }
 
-.card_carros img { 
-    width: 200px;
+.card_carros img {
+    width: 100%;
     height: 120px;
+    object-fit: cover; /* ✅ imagem não distorce mais */
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
 
 .card_carros p {
     margin-top: 1px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #575757;
-  min-height: 40px; /* garante um espaço mínimo para o nome */
-  overflow-wrap: break-word; /* quebra linha se precisar */
+    font-size: 14px;
+    font-weight: 600;
+    color: #575757;
+    min-height: 40px;
+    overflow-wrap: break-word;
 }
 
-.card_carros button { 
-  width: 120px;
-  height: 30px;
-  text-align: center;
-  margin: 12px auto 0 auto; /* Espaço pequeno acima do botão */
-  display: block;
-  border: none;
-  border-radius: 5px;
-  background-color: var(--corDetalhes);
-  color: var(--cor-barra-pesquisa);
-  font-size: 14px;
-  cursor: pointer;
+.card_carros button {
+    width: 120px;
+    height: 30px;
+    text-align: center;
+    margin: 12px auto 0 auto;
+    display: block;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--corDetalhes);
+    color: var(--cor-barra-pesquisa);
+    font-size: 14px;
+    cursor: pointer;
 }
 
 .card_carros a {
@@ -241,4 +236,31 @@
 .cards_cs button a {
     color: var(--cor-barra-pesquisa);
     text-decoration: dashed;
+}
+
+.heart_icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #b4b0b0;
+    cursor: pointer;
+    z-index: 2;
+    transition: transform 0.2s ease;
+    background-color: #ddd;
+    border-radius: 50%;
+    padding: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    user-select: none;
+}
+
+.heart_icon:hover {
+    transform: scale(1.1);
+    background-color: #bbb;
+}
+
+.favoritado {
+    background-color: #e63946;
 }

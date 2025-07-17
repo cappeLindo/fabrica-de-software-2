@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 const Perfil = () => {
   const searchParams = useSearchParams();
   const userId = Cookies.get('id');
+  const userType = Cookies.get('tipo_usuario');
   const API_BASE_URL = valorUrl;
 
   const [isModalVisivel, setModalVisivel] = useState(false);
@@ -27,24 +28,17 @@ const Perfil = () => {
 
     const fetchUserData = async () => {
       try {
-        // Buscar dados do usuário
-        const resUser = await fetch(`${API_BASE_URL}/cliente/${userId}`);
+        const endpoint = userType === 'concessionaria' ? 'concessionaria' : 'cliente';
+        const resUser = await fetch(`${API_BASE_URL}/${endpoint}/${userId}`);
         if (!resUser.ok) throw new Error('Erro ao buscar dados do usuário');
         const dataUser = await resUser.json();
         setUserData(dataUser.dados);
-        console.log('Dados do usuário:', dataUser.dados);
 
-        // Buscar imagem de perfil
-        const resImage = await fetch(`${API_BASE_URL}/cliente/imagem/${userId}`);
+        const resImage = await fetch(`${API_BASE_URL}/${endpoint}/imagem/${userId}`);
         if (resImage.ok) {
           const blob = await resImage.blob();
           setProfileImage(URL.createObjectURL(blob));
         }
-
-        // const resEndereco= await fetch(`${API_BASE_URL}/endereco/${userId}`);
-        // if (resEndereco.ok) {
-        //   setUserData(dataUser.dados);
-        // }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -53,7 +47,7 @@ const Perfil = () => {
     };
 
     fetchUserData();
-  }, [userId]);
+  }, [userId, userType]);
 
   const handleExcluirClick = () => {
     setModalVisivel(true);
@@ -65,15 +59,22 @@ const Perfil = () => {
 
   const handleConcluirClick = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/usuario/${userId}`, {
+      const endpoint = userType === 'concessionaria' ? 'concessionaria' : 'cliente';
+      const res = await fetch(`${API_BASE_URL}/${endpoint}/${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          // Adicione headers de autenticação se necessário
         }
       });
+
       if (!res.ok) throw new Error('Erro ao excluir conta');
-      setModalVisivel(false);
+
+      // Remove cookies
+      Cookies.remove('id');
+      Cookies.remove('tipo_usuario');
+
+      // Alerta e redirecionamento
+      alert("Conta excluída com sucesso!");
       window.location.href = '/telaLogin';
     } catch (err) {
       setError(err.message);
@@ -86,14 +87,13 @@ const Perfil = () => {
       const imageUrl = URL.createObjectURL(file);
       setProfileImage(imageUrl);
 
-      // Enviar imagem para a API
       const formData = new FormData();
       formData.append('imagem', file);
       try {
-        const res = await fetch(`${API_BASE_URL}/usuario/imagem/${userId}`, {
+        const endpoint = userType === 'concessionaria' ? 'concessionaria' : 'usuario';
+        const res = await fetch(`${API_BASE_URL}/${endpoint}/imagem/${userId}`, {
           method: 'POST',
           body: formData,
-          // Adicione headers de autenticação se necessário
         });
         if (!res.ok) throw new Error('Erro ao enviar imagem');
       } catch (err) {
@@ -121,11 +121,11 @@ const Perfil = () => {
   const handleSalvarAlteracoes = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_BASE_URL}/usuario/${userId}`, {
+      const endpoint = userType === 'concessionaria' ? 'concessionaria' : 'usuario';
+      const res = await fetch(`${API_BASE_URL}/${endpoint}/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          // Adicione headers de autenticação se necessário
         },
         body: JSON.stringify(userData)
       });
@@ -136,6 +136,12 @@ const Perfil = () => {
     }
   };
 
+  const handleLogout = () => {
+    Cookies.remove('id');
+    Cookies.remove('tipo_usuario');
+    window.location.href = '/telaLogin';
+  };
+
   if (loading) return <div className={styles.loading}>Carregando...</div>;
   if (error) return <div className={styles.error}>Erro: {error}</div>;
   if (!userData) return <div className={styles.error}>Usuário não encontrado.</div>;
@@ -143,6 +149,8 @@ const Perfil = () => {
   return (
     <>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+      
+      {/* Modal de exclusão */}
       <div className={`${styles.janelaExclusao} ${isModalVisivel ? styles.mostrar : ''}`} id="janelaExclusao">
         <div className={styles.exclusao}>
           <h1>Atenção!</h1>
@@ -154,6 +162,7 @@ const Perfil = () => {
         </div>
       </div>
 
+      {/* Conteúdo principal */}
       <div className={styles.container}>
         <aside className={styles.barraLateral}>
           <div className={styles.perfil1}>
@@ -198,8 +207,16 @@ const Perfil = () => {
                   <button className={styles.botaoMenu}>Meus produtos</button>
                 </Link>
               </li>
-              <li><button className={styles.botaoMenu}>Sair</button></li>
-              <li><button className={styles.excluirConta} id="excluirConta" onClick={handleExcluirClick}>Excluir conta</button></li>
+              <li>
+                <button className={styles.botaoMenu} onClick={handleLogout}>
+                  Sair
+                </button>
+              </li>
+              <li>
+                <button className={styles.excluirConta} id="excluirConta" onClick={handleExcluirClick}>
+                  Excluir conta
+                </button>
+              </li>
             </ul>
           </div>
         </aside>

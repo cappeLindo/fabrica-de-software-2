@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
 import valorUrl from '../../../rotaUrl.js';
+import { Heart } from "lucide-react";
 
 export default function Home() {
   const [concessionarias, setConcessionarias] = useState([]);
@@ -13,6 +14,8 @@ export default function Home() {
   const [carros, setCarros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [favoritos, setFavoritos] = useState([]);  // <-- Estado para favoritos
+
   const { estadoSelecionado } = useEstado();
 
   const API_BASE_URL = valorUrl;
@@ -46,7 +49,6 @@ export default function Home() {
         setConcessionarias(concessionariasWithImages);
         setEnderecos(enderecosData.dados || []);
 
-        // Buscar carros e associar primeira imagem corretamente
         const carrosResponse = await fetch(`${API_BASE_URL}/carro`);
         if (!carrosResponse.ok) throw new Error('Erro ao buscar carros');
         const carrosData = await carrosResponse.json();
@@ -54,7 +56,7 @@ export default function Home() {
         const carrosWithImages = await Promise.all(
           (carrosData.dados || []).map(async (carro) => {
             try {
-              const idImagem = carro.imagens?.[0]; // primeira imagem do carro
+              const idImagem = carro.imagens?.[0];
               if (!idImagem) throw new Error('Sem imagem');
 
               const imagemResponse = await fetch(`${API_BASE_URL}/carro/imagem/${idImagem}`);
@@ -96,6 +98,13 @@ export default function Home() {
       return endereco && endereco.estado === estadoSelecionado;
     }).slice(0, 6);
   }, [carros, concessionarias, enderecos, estadoSelecionado]);
+
+  // Função para alternar favorito
+  function toggleFavorito(id) {
+    setFavoritos(prev =>
+      prev.includes(id) ? prev.filter(fid => fid !== id) : [...prev, id]
+    );
+  }
 
   return (
     <div>
@@ -145,18 +154,39 @@ export default function Home() {
         {!loading && !error && (
           <div className={styles.fundo_carros}>
             {carrosFiltrados.length === 0 && <p>Nenhum carro encontrado para este estado.</p>}
-            {carrosFiltrados.map((carro) => (
-              <div className={styles.card_carros} key={carro.id}>
-                <Image
-                  src={carro.imageUrl}
-                  alt={carro.carro_nome || carro.nome || 'Imagem do carro'}
-                  width={160}
-                  height={120}
-                />
-                <p>{carro.carro_nome || carro.nome}</p>
-                <button><Link href={`/descricaoProduto?id=${carro.id}`}>veja mais</Link></button>
-              </div>
-            ))}
+            {carrosFiltrados.map((carro) => {
+              const isFavorito = favoritos.includes(carro.id);
+
+              return (
+                <div className={styles.card_carros} key={carro.id}>
+                  <div
+                    className={`${styles.heart_icon} ${isFavorito ? styles.favoritado : ''}`}
+                    onClick={() => toggleFavorito(carro.id)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={e => { if (e.key === 'Enter') toggleFavorito(carro.id); }}
+                    aria-label={isFavorito ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                  >
+                    <Heart
+                      size={20}
+                      color={isFavorito ? '#fff' : '#aaa'}
+                      fill={isFavorito ? '#e63946' : 'none'}
+                    />
+                  </div>
+
+                  <Image
+                    src={carro.imageUrl}
+                    alt={carro.carro_nome || carro.nome || 'Imagem do carro'}
+                    width={160}
+                    height={120}
+                  />
+                  <p>{carro.carro_nome || carro.nome}</p>
+                  <button>
+                    <Link href={`/descricaoProduto?id=${carro.id}`}>veja mais</Link>
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

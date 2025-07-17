@@ -1,0 +1,25 @@
+.main {
+    padding-top: 65px;
+    flex: 1;
+    background-color: #EFEFEF;
+    /* opcional */
+    display: flex;
+    /* se quiser centralizar conteúdo */
+    justify-content: center;
+    /* opcional */
+    align-items: center;
+    /* opcional */
+    flex-direction: column;
+}
+
+.body {
+    height: 100%;
+    margin: 0;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--corDeFundo);
+    overflow-x: hidden;
+}

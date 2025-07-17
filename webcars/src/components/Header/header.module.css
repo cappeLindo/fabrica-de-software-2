@@ -6,8 +6,25 @@
     height: 60px;
     background-color: var(--corPrecimento);
     display: flex;
-    align-items: center;    
+    position: absolute;
+    justify-content: space-between;
+    align-items: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.elementosEsquerda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 100%;
+}
+
+.elementosDireita {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 100%;
 }
 
 .logo img {
@@ -23,8 +40,8 @@
 
 .voltar {
     display: flex;
-    align-items: center; 
-    justify-content: center; 
+    align-items: center;
+    justify-content: center;
     text-align: center;
     position: absolute;
     top: 69px;
@@ -32,17 +49,17 @@
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.135);
     margin-left: 10px;
     border-radius: 25px;
-    transition: opacity 0.3s ease, visibility 0.3s ease; 
-    opacity: 1; 
-    visibility: visible; 
-    z-index: 9998; 
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    opacity: 1;
+    visibility: visible;
+    z-index: 9998;
     width: 90px;
     height: 40px;
 }
 
 .voltar.hidden {
-    opacity: 0; 
-    visibility: hidden; 
+    opacity: 0;
+    visibility: hidden;
 }
 
 .voltar a {
@@ -53,32 +70,33 @@
     font-size: 14px;
     font-weight: 500;
     width: 100%;
-    height: 100%; 
-    line-height: 18px; 
+    height: 100%;
+    line-height: 18px;
     text-align: center;
 }
 
 .voltar a:hover {
     color: var(--corDetalhes);
 }
+
 .menuLateral {
     display: flex;
     position: absolute;
     border-radius: 13px;
     flex-direction: column;
     width: 160px;
-    margin-top: 250px;
+    margin-top: 215px;
     margin-left: -200px;
-    transition: transform 0.3s ease; 
+    transition: transform 0.3s ease;
     z-index: 9999;
     font-family: "Poppins", sans-serif;
-    background-color: #fff; 
+    background-color: #fff;
     border-radius: 13px;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.138);
     padding: 5px 30px;
 }
-  
-.menuLateral a{ 
+
+.menuLateral a {
     font-family: "Poppins", sans-serif;
     padding: 10px 0;
     color: #000;
@@ -88,7 +106,7 @@
 
 }
 
-.fotoPerfil{
+.fotoPerfil {
     width: 50px;
     height: 50px;
     border-radius: 25px;
@@ -96,7 +114,7 @@
     margin-top: 20px;
 }
 
-.menuLateral button { 
+.menuLateral button {
     font-family: "Poppins", sans-serif;
     padding: 10px 0;
     color: #000;
@@ -119,22 +137,22 @@
 
 
 .menuLateral.open {
-    transform: translateX(208px); 
-  }
-
-
-.barraPesquisa { 
-    width: 550px; 
-    height: 35px;
-    position: relative;
-    display: flex;
-    margin: auto;
-    align-items: center;
-    background-color: #e6e6e6; 
-    border-radius: 5px; 
+    transform: translateX(208px);
 }
 
-.barraPesquisa input { 
+
+.barraPesquisa {
+    width: 550px;
+    height: 35px;
+    position: absolute;
+    display: flex;
+    margin-left: calc(50vw - 275px);
+    align-items: center;
+    background-color: #e6e6e6;
+    border-radius: 5px;
+}
+
+.barraPesquisa input {
     border: none;
     width: 100%;
     height: 100%;
@@ -143,11 +161,13 @@
     font-size: 13px;
     color: #575757;
     font-weight: 600;
-    background-color: transparent; /* Para corresponder ao fundo */
+    background-color: transparent;
+    /* Para corresponder ao fundo */
 }
 
 .barraPesquisa input::placeholder {
-    color: #989898; /* Cor mais clara para o placeholder */
+    color: #989898;
+    /* Cor mais clara para o placeholder */
     font-size: 11px;
 }
 
@@ -164,7 +184,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border-radius: 0 5px 5px 0;    
+    border-radius: 0 5px 5px 0;
 }
 
 .lupa i {
@@ -195,15 +215,15 @@
 
 .localRegiao {
     display: flex;
-    align-items:last baseline;
+    align-items: last baseline;
     bottom: 0;
     margin: 0px 25px 10px;
     height: 100%;
 }
 
 .localRegiao i {
-    font-size: 18px; 
-    color: var(--corFontes); 
+    font-size: 18px;
+    color: var(--corFontes);
     margin-right: 10px;
 }
 
@@ -211,11 +231,11 @@
     display: flex;
     align-items: center;
     justify-content: end;
-    gap: 30px; 
+    gap: 30px;
     margin-right: 10px;
 }
 
-.linkPerfil{
+.linkPerfil {
     font-size: 47px;
     color: #1a1a1a;
     margin-top: 3px;
@@ -229,7 +249,7 @@
 .entrarLogar {
     margin: 0;
     display: flex;
-    flex-direction: row; 
+    flex-direction: row;
     gap: 1px;
     margin-top: 2rem;
     justify-content: flex-end;
@@ -246,27 +266,27 @@
 }
 
 .resultadosBusca {
-  position: absolute;
-  top: 65px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 550px;
-  max-height: 300px;
-  overflow-y: auto;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 9999;
-  font-family: "Poppins", sans-serif;
-  padding: 10px;
+    position: absolute;
+    top: 65px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 550px;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    font-family: "Poppins", sans-serif;
+    padding: 10px;
 }
 
 .cardResultado {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  cursor: pointer;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
 }
 
 .cardResultado:hover {
-  background-color: #f7f7f7;
+    background-color: #f7f7f7;
 }

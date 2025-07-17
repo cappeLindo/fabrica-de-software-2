@@ -158,21 +158,28 @@ export default function Header() {
       <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css' rel='stylesheet' />
 
       <div className={styles.header}>
-        <Link href='/'>
-          <div className={styles.logo}>
-            <Image src='/images/logo.png' alt='logo' width={60} height={60} />
-          </div>
-        </Link>
+        <div className={styles.elementosEsquerda}>
+          <Link href='/'>
+            <div className={styles.logo}>
+              <Image src='/images/logo.png' alt='logo' width={60} height={60} />
+            </div>
+          </Link>
 
-        <div className={styles.menuIcon} onClick={toggleMenu}>
-          <Menu color='black' size={33} />
+          <div className={styles.menuIcon} onClick={toggleMenu}>
+            <Menu color='black' size={33} />
+          </div>
+
+          <nav className={`${styles.menuLateral} ${menuOpen ? styles.open : ''}`}>
+            <Link href='adicionarAlerta'>Criar Filtro</Link>
+            <Link href={userId ? `/perfil?id=${userId}` : '/telaLogin'}>Perfil</Link>
+            <button onClick={handleLogout}>Sair</button>
+          </nav>
+          <div className={styles.localRegiao}>
+            <i className='bi bi-geo-fill'></i>
+            <SelectEstados />
+          </div>
         </div>
 
-        <nav className={`${styles.menuLateral} ${menuOpen ? styles.open : ''}`}>
-          <Link href='adicionarAlerta'>Criar Filtro</Link>
-          <Link href={userId ? `/perfil?id=${userId}` : '/telaLogin'}>Perfil</Link>
-          <button onClick={handleLogout}>Sair</button>
-        </nav>
 
         {pathname !== '/' && (
           <div className={`${styles.voltar} ${menuOpen ? styles.hidden : ''}`}>
@@ -180,10 +187,7 @@ export default function Header() {
           </div>
         )}
 
-        <div className={styles.localRegiao}>
-          <i className='bi bi-geo-fill'></i>
-          <SelectEstados />
-        </div>
+
 
         <div className={styles.barraPesquisa}>
           <input
@@ -200,31 +204,33 @@ export default function Header() {
             <i className='bi bi-search'></i>
           </button>
         </div>
-        {hasMounted && !userId && (
-          <div className={styles.entrarLogar}>
-            <Link href='/TelaCadastroCliente'>Criar sua conta</Link>
-            <Link href='/telaLogin'>Login</Link>
-          </div>
-        )}
+        <div className={styles.elementosDireita}>
+          {hasMounted && !userId && (
+            <div className={styles.entrarLogar}>
+              <Link href='/TelaCadastroCliente'>Criar sua conta</Link>
+              <Link href='/telaLogin'>Login</Link>
+            </div>
+          )}
 
-        {hasMounted && (
-          <div className={styles.perfilCarrinho}>
-            <div className={styles.carrinho}>
-              <Link href='/TelaDesejos' className={styles.perfil}>
-                <Image src={CarrinhoImg} alt='carrinho' width={50} height={50} />
-              </Link>
+          {hasMounted && (
+            <div className={styles.perfilCarrinho}>
+              <div className={styles.carrinho}>
+                <Link href='/TelaDesejos' className={styles.perfil}>
+                  <Image src={CarrinhoImg} alt='carrinho' width={50} height={50} />
+                </Link>
+              </div>
+              <div className={styles.perfil}>
+                <Link href={userId ? `/perfil?id=${userId}` : '/telaLogin'} className={styles.linkPerfil}>
+                  {imagemPerfil ? (
+                    <img className={styles.fotoPerfil} src={imagemPerfil} alt='imagem_perfil_usuario' />
+                  ) : (
+                    <i className='bi bi-person-circle'></i>
+                  )}
+                </Link>
+              </div>
             </div>
-            <div className={styles.perfil}>
-              <Link href={userId ? `/perfil?id=${userId}` : '/telaLogin'} className={styles.linkPerfil}>
-                {imagemPerfil ? (
-                  <img className={styles.fotoPerfil} src={imagemPerfil} alt='imagem_perfil_usuario' />
-                ) : (
-                  <i className='bi bi-person-circle'></i>
-                )}
-              </Link>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {busca && (
