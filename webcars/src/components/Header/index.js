@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import styles from './header.module.css';
 import Image from 'next/image';
@@ -46,18 +45,35 @@ const SelectEstados = () => {
   );
 };
 
+
 export default function Header() {
-  const router = useRouter();
-  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [busca, setBusca] = useState('');
   const [carros, setCarros] = useState([]);
-  const [userId, setUserId] = useState(Cookies.get('id') || null);
+  const [userId, setUserId] = useState(null);
+  const [hasMounted, setHasMounted] = useState(false);
+  const [imagemPerfil, setImagemPerfil] = useState(null);
 
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Garante que só monta no cliente
   useEffect(() => {
+    setHasMounted(true);
     const storedId = Cookies.get('id');
     setUserId(storedId || null);
+
+    if (storedId) {
+      fetch(`${valorUrl}/cliente/imagem/${storedId}`).then((res) => {
+        if (res.ok) {
+          setImagemPerfil(`${valorUrl}/cliente/imagem/${storedId}`);
+        } else {
+          setImagemPerfil(null);
+        }
+      });
+    }
   }, []);
+
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -136,6 +152,7 @@ export default function Header() {
     }
   };
 
+
   return (
     <>
       <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css' rel='stylesheet' />
@@ -183,24 +200,31 @@ export default function Header() {
             <i className='bi bi-search'></i>
           </button>
         </div>
-
-        <div className={styles.entrarLogar}>
-          <Link href='/TelaCadastroCliente'>Criar sua conta</Link>
-          <Link href='/telaLogin'>Login</Link>
-        </div>
-
-        <div className={styles.perfilCarrinho}>
-          <div className={styles.carrinho}>
-            <Link href='/TelaDesejos' className={styles.perfil}>
-              <Image src={CarrinhoImg} alt='carrinho' width={50} height={50} />
-            </Link>
+        {hasMounted && !userId && (
+          <div className={styles.entrarLogar}>
+            <Link href='/TelaCadastroCliente'>Criar sua conta</Link>
+            <Link href='/telaLogin'>Login</Link>
           </div>
-          <div className={styles.perfil}>
-            <Link href={userId ? `/perfil?id=${userId}` : '/telaLogin'} className={styles.linkPerfil}>
-              <i className='bi bi-person-circle'></i>
-            </Link>
+        )}
+
+        {hasMounted && (
+          <div className={styles.perfilCarrinho}>
+            <div className={styles.carrinho}>
+              <Link href='/TelaDesejos' className={styles.perfil}>
+                <Image src={CarrinhoImg} alt='carrinho' width={50} height={50} />
+              </Link>
+            </div>
+            <div className={styles.perfil}>
+              <Link href={userId ? `/perfil?id=${userId}` : '/telaLogin'} className={styles.linkPerfil}>
+                {imagemPerfil ? (
+                  <img className={styles.fotoPerfil} src={imagemPerfil} alt='imagem_perfil_usuario' />
+                ) : (
+                  <i className='bi bi-person-circle'></i>
+                )}
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {busca && (
