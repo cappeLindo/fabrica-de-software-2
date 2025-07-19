@@ -64,11 +64,12 @@ export default function Header() {
     const storedId = Cookies.get('id');
     setUserId(storedId || null);
     const storedTypeUser = Cookies.get('typeUser');
-    settypeUser(storedTypeUser || null)
-    if (storedId) {
-      fetch(`${valorUrl}/cliente/imagem/${storedId}`).then((res) => {
+    settypeUser(storedTypeUser)
+    if (storedId && storedTypeUser) {
+      console.log(`${valorUrl}/${storedTypeUser}/imagem/${storedId}`)
+      fetch(`${valorUrl}/${storedTypeUser}/imagem/${storedId}`).then((res) => {
         if (res.ok) {
-          setImagemPerfil(`${valorUrl}/cliente/imagem/${storedId}`);
+          setImagemPerfil(`${valorUrl}/${storedTypeUser}/imagem/${storedId}`);
         } else {
           setImagemPerfil(null);
         }
@@ -158,7 +159,7 @@ export default function Header() {
 
           <nav className={`${styles.menuLateral} ${menuOpen ? styles.open : ''}`}>
             {typeUser && typeUser == 'concessionaria' ? <Link href="/adicionarProduto">Vender</Link> : <Link href='adicionarAlerta'>Criar Filtro</Link>}
-            <Link href={userId ? `/perfil?id=${userId}` : '/telaLogin'}>Perfil</Link>
+            <Link href={userId ? `/perfil` : '/telaLogin'}>Perfil</Link>
             <button onClick={handleLogout}>Sair</button>
           </nav>
           <div className={styles.localRegiao}>
@@ -207,7 +208,7 @@ export default function Header() {
                 </Link>
               </div>
               <div className={styles.perfil}>
-                <Link href={userId ? `/perfil?id=${userId}` : '/telaLogin'} className={styles.linkPerfil}>
+                <Link href={userId ? `/perfil` : '/telaLogin'} className={styles.linkPerfil}>
                   {imagemPerfil ? (
                     <img className={styles.fotoPerfil} src={imagemPerfil} alt='imagem_perfil_usuario' />
                   ) : (

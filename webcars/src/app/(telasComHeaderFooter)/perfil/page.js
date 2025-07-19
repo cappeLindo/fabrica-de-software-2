@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
 const Perfil = () => {
   const searchParams = useSearchParams();
   const userId = Cookies.get('id');
-  const userType = Cookies.get('tipo_usuario');
+  const userType = Cookies.get('typeUser');
   const API_BASE_URL = valorUrl;
 
   const [isModalVisivel, setModalVisivel] = useState(false);
@@ -28,13 +28,13 @@ const Perfil = () => {
 
     const fetchUserData = async () => {
       try {
-        const endpoint = userType === 'concessionaria' ? 'concessionaria' : 'cliente';
-        const resUser = await fetch(`${API_BASE_URL}/${endpoint}/${userId}`);
+        
+        const resUser = await fetch(`${API_BASE_URL}/${userType}/${userId}`);
         if (!resUser.ok) throw new Error('Erro ao buscar dados do usuário');
         const dataUser = await resUser.json();
         setUserData(dataUser.dados);
 
-        const resImage = await fetch(`${API_BASE_URL}/${endpoint}/imagem/${userId}`);
+        const resImage = await fetch(`${API_BASE_URL}/${userType}/imagem/${userId}`);
         if (resImage.ok) {
           const blob = await resImage.blob();
           setProfileImage(URL.createObjectURL(blob));
@@ -59,8 +59,8 @@ const Perfil = () => {
 
   const handleConcluirClick = async () => {
     try {
-      const endpoint = userType === 'concessionaria' ? 'concessionaria' : 'cliente';
-      const res = await fetch(`${API_BASE_URL}/${endpoint}/${userId}`, {
+      
+      const res = await fetch(`${API_BASE_URL}/${userType}/${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -90,8 +90,8 @@ const Perfil = () => {
       const formData = new FormData();
       formData.append('imagem', file);
       try {
-        const endpoint = userType === 'concessionaria' ? 'concessionaria' : 'usuario';
-        const res = await fetch(`${API_BASE_URL}/${endpoint}/imagem/${userId}`, {
+        
+        const res = await fetch(`${API_BASE_URL}/${userType}/imagem/${userId}`, {
           method: 'POST',
           body: formData,
         });
@@ -121,8 +121,8 @@ const Perfil = () => {
   const handleSalvarAlteracoes = async (e) => {
     e.preventDefault();
     try {
-      const endpoint = userType === 'concessionaria' ? 'concessionaria' : 'usuario';
-      const res = await fetch(`${API_BASE_URL}/${endpoint}/${userId}`, {
+      
+      const res = await fetch(`${API_BASE_URL}/${userType}/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ const Perfil = () => {
 
   const handleLogout = () => {
     Cookies.remove('id');
-    Cookies.remove('tipo_usuario');
+    Cookies.remove('typeUser');
     window.location.href = '/telaLogin';
   };
 
