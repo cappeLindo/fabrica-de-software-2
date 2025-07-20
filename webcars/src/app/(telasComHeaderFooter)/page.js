@@ -72,8 +72,26 @@ export default function Home() {
             }
           })
         );
+        if (storedTypeUser === 'cliente') {
+          try {
+            const idCliente = Cookies.get('id');
+            const favoritosResponse = await fetch(`${API_BASE_URL}/favoritosCarros/cliente/${idCliente}`, {
+              method: 'GET',
+              credentials: 'include',
+            });
+
+            if (favoritosResponse.ok) {
+              const favoritosData = await favoritosResponse.json();
+              const ids = favoritosData.dados.map(f => f.carro_id);
+              setFavoritos(ids);
+            }
+          } catch (err) {
+            console.error('Erro ao buscar favoritos:', err.message);
+          }
+        }
         setCarros(carrosWithImages);
         setLoading(false);
+
       } catch (err) {
         setError('Erro ao carregar dados.');
         setLoading(false);
@@ -102,10 +120,40 @@ export default function Home() {
   }, [carros, concessionarias, enderecos, estadoSelecionado]);
 
   // Função para alternar favorito
-  function toggleFavorito(id) {
-    setFavoritos(prev =>
-      prev.includes(id) ? prev.filter(fid => fid !== id) : [...prev, id]
-    );
+  async function toggleFavorito(idCarro) {
+    const isFavorito = favoritos.includes(idCarro);
+    const idCliente = Cookies.get('id'); // ID salvo no login, visível
+
+    const url = isFavorito
+      ? `${API_BASE_URL}/favoritosCarros/clienteECarro/${idCliente}/${idCarro}`
+      : `${API_BASE_URL}/favoritosCarros/${idCliente}`;
+
+    const options = {
+      method: isFavorito ? 'DELETE' : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // envia o cookie HTTP-only
+      body: isFavorito ? null : JSON.stringify({ idCarro }),
+    };
+
+    try {
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        const erro = await response.json();
+        throw new Error(erro?.error || 'Erro ao processar favorito');
+      }
+
+      // Atualiza visualmente
+      setFavoritos((prev) =>
+        isFavorito ? prev.filter((id) => id !== idCarro) : [...prev, idCarro]
+      );
+    } catch (err) {
+      console.log(idCliente, idCarro)
+      alert('Você precisa estar logado como cliente para usar favoritos.');
+      console.error('Erro ao alterar favorito:', err.message);
+    }
   }
 
   return (

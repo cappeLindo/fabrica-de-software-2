@@ -12,8 +12,36 @@
     position: relative;
 }
 
+.heart_icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #b4b0b0;
+    cursor: pointer;
+    z-index: 2;
+    transition: transform 0.2s ease;
+    background-color: #ddd;
+    border-radius: 50%;
+    padding: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    user-select: none;
+}
+
+.heart_icon:hover {
+    transform: scale(1.1);
+    background-color: #bbb;
+}
+
+.favoritado {
+    background-color: #e63946;
+}
+
+
 .fundoCarro {
-    width: 1100px;
+    max-width: 1100px;
     height: auto;
     background-color: #d9d9d9;
     margin-left: 20px;
