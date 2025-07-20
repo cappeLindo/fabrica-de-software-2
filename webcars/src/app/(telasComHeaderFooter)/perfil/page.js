@@ -28,11 +28,18 @@ const Perfil = () => {
 
     const fetchUserData = async () => {
       try {
-        
         const resUser = await fetch(`${API_BASE_URL}/${userType}/${userId}`);
         if (!resUser.ok) throw new Error('Erro ao buscar dados do usuário');
         const dataUser = await resUser.json();
-        setUserData(dataUser.dados);
+        console.log('JSON completo recebido da API:', dataUser);
+        console.log('Dados retornados pela API:', dataUser.dados);
+        setUserData({
+          ...dataUser.dados,
+          cpf_cnpj: userType === 'concessionaria' ? dataUser.dados.cnpj : dataUser.dados.cpf,
+          endereco: dataUser.dados.rua,
+          cep: dataUser.dados.cep,
+          numero: dataUser.dados.numero
+        });
 
         const resImage = await fetch(`${API_BASE_URL}/${userType}/imagem/${userId}`);
         if (resImage.ok) {
@@ -59,21 +66,17 @@ const Perfil = () => {
 
   const handleConcluirClick = async () => {
     try {
-      
       const res = await fetch(`${API_BASE_URL}/${userType}/${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
 
       if (!res.ok) throw new Error('Erro ao excluir conta');
 
-      // Remove cookies
       Cookies.remove('id');
-      Cookies.remove('tipo_usuario');
-
-      // Alerta e redirecionamento
+      Cookies.remove('typeUser');
       alert("Conta excluída com sucesso!");
       window.location.href = '/telaLogin';
     } catch (err) {
@@ -90,7 +93,6 @@ const Perfil = () => {
       const formData = new FormData();
       formData.append('imagem', file);
       try {
-        
         const res = await fetch(`${API_BASE_URL}/${userType}/imagem/${userId}`, {
           method: 'POST',
           body: formData,
@@ -110,7 +112,7 @@ const Perfil = () => {
 
   const handleInputChange = (e, field, index = null) => {
     if (index !== null) {
-      const newTelefones = [...userData.telefones];
+      const newTelefones = [...(userData.telefones || [])];
       newTelefones[index] = e.target.value;
       setUserData({ ...userData, telefones: newTelefones });
     } else {
@@ -121,13 +123,27 @@ const Perfil = () => {
   const handleSalvarAlteracoes = async (e) => {
     e.preventDefault();
     try {
-      
+      const updatedUserData = { ...userData };
+      if (userType === 'concessionaria') {
+        updatedUserData.cnpj = updatedUserData.cpf_cnpj;
+        updatedUserData.rua = updatedUserData.endereco;
+        delete updatedUserData.cpf_cnpj;
+        delete updatedUserData.cpf;
+        delete updatedUserData.endereco;
+      } else {
+        updatedUserData.cpf = updatedUserData.cpf_cnpj;
+        updatedUserData.rua = updatedUserData.endereco;
+        delete updatedUserData.cpf_cnpj;
+        delete updatedUserData.cnpj;
+        delete updatedUserData.endereco;
+      }
+
       const res = await fetch(`${API_BASE_URL}/${userType}/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(updatedUserData),
       });
       if (!res.ok) throw new Error('Erro ao salvar alterações');
       setLogicPerfil(true);
@@ -150,7 +166,6 @@ const Perfil = () => {
     <>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
       
-      {/* Modal de exclusão */}
       <div className={`${styles.janelaExclusao} ${isModalVisivel ? styles.mostrar : ''}`} id="janelaExclusao">
         <div className={styles.exclusao}>
           <h1>Atenção!</h1>
@@ -162,7 +177,6 @@ const Perfil = () => {
         </div>
       </div>
 
-      {/* Conteúdo principal */}
       <div className={styles.container}>
         <aside className={styles.barraLateral}>
           <div className={styles.perfil1}>
@@ -200,12 +214,18 @@ const Perfil = () => {
                 <Link href="/TelaDesejos">
                   <button className={styles.botaoMenu}>Lista de desejo</button>
                 </Link>
-                <Link href="/MeusAlertas">
-                  <button className={styles.botaoMenu}>Meus alertas</button>
-                </Link>
-                <Link href="/meusProdutos">
-                  <button className={styles.botaoMenu}>Meus produtos</button>
-                </Link>
+
+                {userType === 'cliente' && (
+                  <Link href="/MeusAlertas">
+                    <button className={styles.botaoMenu}>Meus alertas</button>
+                  </Link>
+                )}
+
+                {userType === 'concessionaria' && (
+                  <Link href="/meusProdutos">
+                    <button className={styles.botaoMenu}>Meus produtos</button>
+                  </Link>
+                )}
               </li>
               <li>
                 <button className={styles.botaoMenu} onClick={handleLogout}>
@@ -243,9 +263,9 @@ const Perfil = () => {
             <div className={styles.informaçoes}>
               <input 
                 type="text" 
-                placeholder="CPF/CNPJ" 
-                value={userData.cpf || ''} 
-                onChange={(e) => handleInputChange(e, 'cpf_cnpj')} 
+                placeholder={userType === 'concessionaria' ? 'CNPJ' : 'CPF'} 
+                value={userType === 'concessionaria' ? (userData.cnpj || '') : (userData.cpf || '')} 
+                onChange={(e) => handleInputChange(e, userType === 'concessionaria' ? 'cnpj' : 'cpf')} 
                 disabled={logicPerfil}
               />
               <input 
@@ -257,6 +277,61 @@ const Perfil = () => {
               />
             </div>
 
+            {(userType === 'concessionaria' || userType === 'cliente') && (
+              <>
+                <hr className={styles.hr} />
+                <h2>Endereço</h2>
+                <div className={styles.informaçoes}>
+                  <input 
+                    type="text" 
+                    placeholder="CEP" 
+                    value={userData.cep || ''} 
+                    onChange={(e) => handleInputChange(e, 'cep')} 
+                    disabled={logicPerfil}
+                  />
+                  <input 
+                    type="text" 
+                    placeholder="Estado" 
+                    value={userData.estado || ''} 
+                    onChange={(e) => handleInputChange(e, 'estado')} 
+                    disabled={logicPerfil}
+                  />
+                </div>
+                <div className={styles.informaçoes}>
+                  <input 
+                    type="text" 
+                    placeholder="Cidade" 
+                    value={userData.cidade || ''} 
+                    onChange={(e) => handleInputChange(e, 'cidade')} 
+                    disabled={logicPerfil}
+                  />
+                  <input 
+                    type="text" 
+                    placeholder="Bairro" 
+                    value={userData.bairro || ''} 
+                    onChange={(e) => handleInputChange(e, 'bairro')} 
+                    disabled={logicPerfil}
+                  />
+                </div>
+                <div className={styles.informaçoes}>
+                  <input 
+                    type="text" 
+                    placeholder="Rua" 
+                    value={userData.endereco || ''} 
+                    onChange={(e) => handleInputChange(e, 'endereco')} 
+                    disabled={logicPerfil}
+                  />
+                  <input 
+                    type="text" 
+                    placeholder="Número" 
+                    value={userData.numero || ''} 
+                    onChange={(e) => handleInputChange(e, 'numero')} 
+                    disabled={logicPerfil}
+                  />
+                </div>
+              </>
+            )}
+
             <hr className={styles.hr} />
 
             <h2>Telefones</h2>
@@ -265,7 +340,7 @@ const Perfil = () => {
                 type="text" 
                 placeholder="+(00) 00 00000-0000" 
                 value={userData.telefone || ''} 
-                onChange={(e) => handleInputChange(e, 'telefones', 0)} 
+                onChange={(e) => handleInputChange(e, 'telefone', 0)} 
                 disabled={logicPerfil}
               />
               <input 
@@ -273,58 +348,6 @@ const Perfil = () => {
                 placeholder="+(00) 00 00000-0000" 
                 value={userData.telefones?.[1] || ''} 
                 onChange={(e) => handleInputChange(e, 'telefones', 1)} 
-                disabled={logicPerfil}
-              />
-            </div>
-
-            <hr className={styles.hr} />
-
-            <h2>Endereço</h2>
-            <div className={styles.informaçoes}>
-              <input 
-                type="text" 
-                placeholder="CEP" 
-                value={userData.cep || ''} 
-                onChange={(e) => handleInputChange(e, 'cep')} 
-                disabled={logicPerfil}
-              />
-              <input 
-                type="text" 
-                placeholder="Estado" 
-                value={userData.estado || ''} 
-                onChange={(e) => handleInputChange(e, 'estado')} 
-                disabled={logicPerfil}
-              />
-            </div>
-            <div className={styles.informaçoes}>
-              <input 
-                type="text" 
-                placeholder="Cidade" 
-                value={userData.cidade || ''} 
-                onChange={(e) => handleInputChange(e, 'cidade')} 
-                disabled={logicPerfil}
-              />
-              <input 
-                type="text" 
-                placeholder="Bairro" 
-                value={userData.bairro || ''} 
-                onChange={(e) => handleInputChange(e, 'bairro')} 
-                disabled={logicPerfil}
-              />
-            </div>
-            <div className={styles.informaçoes}>
-              <input 
-                type="text" 
-                placeholder="Endereço" 
-                value={userData.endereco || ''} 
-                onChange={(e) => handleInputChange(e, 'endereco')} 
-                disabled={logicPerfil}
-              />
-              <input 
-                type="text" 
-                placeholder="Número" 
-                value={userData.numero || ''} 
-                onChange={(e) => handleInputChange(e, 'numero')} 
                 disabled={logicPerfil}
               />
             </div>
