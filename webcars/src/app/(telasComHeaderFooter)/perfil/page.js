@@ -40,9 +40,9 @@ const Perfil = () => {
           ...dataUser.dados,
           cpf_cnpj: userType === 'concessionaria' ? dataUser.dados.cnpj : dataUser.dados.cpf,
           endereco: dataUser.dados.rua,
-          cep: dataUser.dados.cep || "Não informado",
+          cep: dataUser.dados.cep || "",
           numero: dataUser.dados.numero,
-          estado: ufParaEstadoCompleto(dataUser.dados.estado)
+          estado: ufParaEstadoCompleto(dataUser.dados.estado || '')
         });
 
         const resImage = await fetch(`${API_BASE_URL}/${userType}/imagem/${userId}`);

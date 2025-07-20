@@ -7,7 +7,7 @@
 .containerFormulario{
     margin: 50px auto;
     background-color: var(--corPrincipal);
-    height: 350px;
+    min-height: 350px;
     padding: 1%;
     border-radius: 15px;
 }
