@@ -54,9 +54,7 @@ const DropdownEspecial = ({
     };
 
     const handleAbrirDropdown = () => {
-        if (valores.length > 0) {
-            setDropdownAberto(dropdownAberto === label ? "" : label);
-        }
+        setDropdownAberto(dropdownAberto === label ? "" : label);
     };
 
 
@@ -67,7 +65,7 @@ const DropdownEspecial = ({
                     <p className={styles.label}>{label[0].toUpperCase() + label.slice(1)}</p>
 
                     <div
-                        className={`${styles.customSelect} ${valores.length === 0 ? styles.disabled : ""}`}
+                        className={`${styles.customSelect}`}
                         onClick={handleAbrirDropdown}
                     >
                         <span>{selecionado}</span>
@@ -84,7 +82,7 @@ const DropdownEspecial = ({
                         </span>
                     </div>
 
-                    {dropdownAberto === label && valores.length > 0 && (
+                    {dropdownAberto === label && (
                         <ul className={styles.dropdownLista}>
                             {valores.map((item) => (
                                 <li
@@ -95,9 +93,12 @@ const DropdownEspecial = ({
                                     {item[`${label}_nome`]}
                                 </li>
                             ))}
-                            <Link className={styles.linkclass} href='/adicionarOpcaoDropdown'><li key={`adicionarTabela${label}`} className={styles.linkOutro}>Outro</li></Link>
+                            <Link className={styles.linkclass} href='/adicionarOpcaoDropdown'>
+                                <li key={`adicionarTabela${label}`} className={styles.linkOutro}>Outro</li>
+                            </Link>
                         </ul>
                     )}
+
 
                     {mensagem && <p className={styles.mensagemErro}>{mensagem}</p>}
                 </div>

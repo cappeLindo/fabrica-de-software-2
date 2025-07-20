@@ -86,7 +86,7 @@ const TelaDaConcessionaria = () => {
   if (!concessionaria) return <div className={styles.error}>Concessionária não encontrada.</div>;
 
   return (
-    <main className={styles.conteudoPrincipal}>
+    <div className={styles.conteudoPrincipal}>
       <section className={styles.secaoFoto}>
         <div className={styles.containerFoto}>
           {fotoConcessionaria ? (
@@ -151,7 +151,7 @@ const TelaDaConcessionaria = () => {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

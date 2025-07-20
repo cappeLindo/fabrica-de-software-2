@@ -1,51 +1,98 @@
-'use client'
+'use client';
 import React, { useState } from "react";
 import styles from './adicionarOpcao.module.css';
 import DropdownSimulado from "./DropDownCampos";
-import { categoria, cambio, modelo, cor, marca, combustivel, aro } from "@/components/funcoesDropdown/dados.js";
+import Dropdown from "@/components/funcoesDropdown/DropDown";
+import valorUrl from "../../../../rotaUrl";
 
 export default function AdicionarProduto() {
     const [dropdownAberto, setDropdownAberto] = useState("");
     const [valorCampo, setValorCampo] = useState("");
     const [pesquisa, setPesquisa] = useState("");
-    const [novaOpcao, setNovaOpcao] = useState("");
+    const [resultados, setResultados] = useState([]);
+    const [marcaSelecionada, setMarcaSelecionada] = useState(null);
+    const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
 
     const handleValorSelecionado = (label, valor) => {
+        const valorNormalizado = valor.toLowerCase();
         if (label === 'campos') {
-            if (valor.toLowerCase() == 'combustível') {
-                setValorCampo('combustivel');
-            } else if (valor.toLowerCase() == 'câmbio') {
-                setValorCampo('cambio')
-            } else {
-                setValorCampo(valor.toLowerCase());
-            }
+            if (valorNormalizado === 'combustível') setValorCampo('combustivel');
+            else if (valorNormalizado === 'câmbio') setValorCampo('cambio');
+            else setValorCampo(valorNormalizado);
 
-            setPesquisa(""); // Resetar pesquisa ao mudar o campo
+            // Reset ao mudar o campo
+            setPesquisa("");
+            setResultados([]);
+            setMarcaSelecionada(null);
+            setCategoriaSelecionada(null);
+        }
+
+        if (label === 'marca') setMarcaSelecionada(valor.id);
+        if (label === 'categoria') setCategoriaSelecionada(valor.id);
+    };
+
+    const buscarResultados = async (busca) => {
+        if (!valorCampo || !busca) return;
+
+        try {
+            const response = await fetch(`${valorUrl}/${valorCampo}?nome=${busca}`);
+            const data = await response.json();
+            setResultados(data);
+        } catch (err) {
+            console.error("Erro ao buscar:", err);
+            setResultados([]);
         }
     };
 
-    const dadosMap = {
-        "cor": cor,
-        "modelo": modelo,
-        "aro": aro,
-        "combustivel": combustivel,
-        "marca": marca,
-        "cambio": cambio,
-        "categoria": categoria
+    const handleChangePesquisa = (e) => {
+        const valor = e.target.value;
+        setPesquisa(valor);
+        buscarResultados(valor);
     };
 
-    const getDados = () => dadosMap[valorCampo] || [];
+    const podeAdicionar = () => {
+        if (!pesquisa) return false;
 
-    const dadosFiltrados = getDados().filter(item =>
-        item[`nome_${valorCampo}`]?.toLowerCase().includes(pesquisa.toLowerCase())
-    );
+        const jaExiste = resultados.some(item =>
+            (item[`nome_${valorCampo}`] || item.nome)?.toLowerCase() === pesquisa.toLowerCase()
+        );
 
-    const podeAdicionar = pesquisa && !dadosFiltrados.some(item => item[`nome_${valorCampo}`].toLowerCase() === pesquisa.toLowerCase());
+        if (valorCampo === 'modelo') {
+            return !jaExiste && marcaSelecionada && categoriaSelecionada;
+        }
 
-    const handleAdicionarOpcao = () => {
-        if (podeAdicionar) {
-            console.log(`Enviando nova opção: ${pesquisa} para o campo ${valorCampo}`);
-            setNovaOpcao(""); // Resetar após envio
+        return !jaExiste;
+    };
+
+    const handleAdicionarOpcao = async () => {
+        if (!podeAdicionar()) return;
+
+        try {
+            const body =
+                valorCampo === 'modelo'
+                    ? {
+                          nome: pesquisa,
+                          id_marca: marcaSelecionada,
+                          id_categoria: categoriaSelecionada
+                      }
+                    : { nome: pesquisa };
+
+            const response = await fetch(`${valorUrl}/${valorCampo}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (!response.ok) throw new Error("Erro ao adicionar opção");
+
+            alert(`Opção "${pesquisa}" adicionada com sucesso em "${valorCampo}"`);
+            setPesquisa("");
+            setResultados([]);
+        } catch (err) {
+            console.error(err);
+            alert("Erro ao adicionar nova opção.");
         }
     };
 
@@ -55,38 +102,58 @@ export default function AdicionarProduto() {
                 <div className={styles.containerMensagem}>
                     <h2>Não encontrou o que deseja? Adicione a opção desejada aqui!</h2>
                 </div>
-                <div>
-                    <div>
-                        <label>Qual campo não encontrou opção?</label>
-                        <DropdownSimulado
-                            label="campos"
-                            onValorSelecionado={handleValorSelecionado}
-                            dropdownAberto={dropdownAberto}
-                            setDropdownAberto={setDropdownAberto}
-                        />
-                    </div>
-                    {valorCampo && (
-                        <div className={styles.containerListaEBuscar}>
-                            <div className={styles.campoBuscarInput}>
-                                <label>Pesquisar opções existentes:</label>
-                                <input
-                                    type="text"
-                                    value={pesquisa}
-                                    onChange={(e) => setPesquisa(e.target.value)}
-                                />
-                            </div>
 
-                            <ul className={styles.listaResultadoBusca}>
-                                {dadosFiltrados.map((item) => (
-                                    <li key={item[`id_${valorCampo}`]}>{item[`nome_${valorCampo}`]}</li>
-                                ))}
-                            </ul>
-                            {podeAdicionar && (
-                                <button className={styles.estilobtn} onClick={handleAdicionarOpcao}>Adicionar "{pesquisa}"</button>
-                            )}
+                <label>Qual campo não encontrou opção?</label>
+                <DropdownSimulado
+                    label="campos"
+                    onValorSelecionado={handleValorSelecionado}
+                    dropdownAberto={dropdownAberto}
+                    setDropdownAberto={setDropdownAberto}
+                />
+
+                {valorCampo && (
+                    <div className={styles.containerListaEBuscar}>
+                        {valorCampo === "modelo" && (
+                            <>
+                                <Dropdown
+                                    label="marca"
+                                    onValorSelecionado={handleValorSelecionado}
+                                    dropdownAberto={dropdownAberto}
+                                    setDropdownAberto={setDropdownAberto}
+                                />
+                                <Dropdown
+                                    label="categoria"
+                                    onValorSelecionado={handleValorSelecionado}
+                                    dropdownAberto={dropdownAberto}
+                                    setDropdownAberto={setDropdownAberto}
+                                />
+                            </>
+                        )}
+
+                        <div className={styles.campoBuscarInput}>
+                            <label>Pesquisar opções existentes:</label>
+                            <input
+                                type="text"
+                                value={pesquisa}
+                                onChange={handleChangePesquisa}
+                            />
                         </div>
-                    )}
-                </div>
+
+                        <ul className={styles.listaResultadoBusca}>
+                            {resultados.map((item) => (
+                                <li key={item[`id_${valorCampo}`] || item.id}>
+                                    {item[`nome_${valorCampo}`] || item.nome}
+                                </li>
+                            ))}
+                        </ul>
+
+                        {podeAdicionar() && (
+                            <button className={styles.estilobtn} onClick={handleAdicionarOpcao}>
+                                Adicionar "{pesquisa}"
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
