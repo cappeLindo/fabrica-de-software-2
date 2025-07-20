@@ -1,37 +1,75 @@
 'use client'
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
-import styles from './trocarSenha.module.css'
+import styles from './trocarSenha.module.css';
+import emailjs from 'emailjs-com';
+import valorUrl from "../../../rotaUrl";
 
 export default function PasswordReset() {
     const router = useRouter();
     const [code, setCode] = useState("");
     const [inputs, setInputs] = useState(["", "", "", "", "", ""]);
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(0);
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [error, setError] = useState("");
     const [showSenha, setShowSenha] = useState(false);
     const [showConfirmarSenha, setShowConfirmarSenha] = useState(false);
-    const [email, setEmail] = useState("exemplo@gmail.com");
-    const [newEmail, setNewEmail] = useState("");
+    const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [userId, setUserId] = useState(null);
+    const [mensagem, setMensagem] = useState({ tipo: "", texto: "" });
 
-    useEffect(() => {
-        generateCode();
-    }, []);
-
-    const generateCode = () => {
-        //const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-        const generatedCode = '000000';
-        setCode(generatedCode);
-        console.log("Código gerado:", generatedCode);
+    const mostrarMensagem = (tipo, texto) => {
+        setMensagem({ tipo, texto });
+        setTimeout(() => setMensagem({ tipo: "", texto: "" }), 4000);
     };
 
-    const handleInputChange = (index, value) => {
+    const handleEnviarCodigo = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${valorUrl}/cliente?email=${email}`);
+            const data = await response.json();
+            if (!response.ok || !data.dados) {
+                mostrarMensagem("erro", "E-mail não encontrado.");
+                setLoading(false);
+                return;
+            }
+            setUserId(data.dados[0].id);
+
+            const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+            setCode(generatedCode);
+
+            await emailjs.send(
+                'service_kp0cwif',
+                'template_0y1fjdd',
+                {
+                    to_email: email,
+                    codigo: generatedCode
+                },
+                'H5x3Tf0gE9Ud4uzM6'
+            );
+
+            setStep(1);
+        } catch (err) {
+            console.error(err);
+            mostrarMensagem("erro", "Erro ao enviar o código.");
+        }
+        setLoading(false);
+    };
+
+    const handleInputChange = (index, value, e) => {
+        // Se colar e o valor tiver 6 dígitos, distribui automaticamente
+        const pasted = e?.clipboardData?.getData('text');
+        if (pasted && pasted.length === 6 && /^\d{6}$/.test(pasted)) {
+            const newInputs = pasted.split('');
+            setInputs(newInputs);
+            return;
+        }
+
         if (/^\d?$/.test(value)) {
-            let newInputs = [...inputs];
+            const newInputs = [...inputs];
             newInputs[index] = value;
             setInputs(newInputs);
 
@@ -43,46 +81,79 @@ export default function PasswordReset() {
         }
     };
 
-    const handleKeyDown = (index, e) => {
-        if (e.key === "Backspace" && !inputs[index] && index > 0) {
-            document.getElementById(`input-${index - 1}`).focus();
-        }
-    };
 
     const verifyCode = () => {
         if (inputs.join("") === code) {
-            setStep(3);
-            setError('')
+            setStep(2);
         } else {
-            setError("Código incorreto. Tente novamente.");
+            mostrarMensagem("erro", "Código incorreto. Tente novamente.");
             setInputs(["", "", "", "", "", ""]);
         }
     };
 
-    const validatePassword = () => {
+    const validatePassword = async () => {
         const regex = /^(?=.*[A-Z])(?=.*\d{3,})(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
         if (!regex.test(password)) {
-            setError("A senha deve ter pelo menos 3 números, 1 caractere especial e 1 letra maiúscula.");
+            mostrarMensagem("erro", "A senha deve ter pelo menos 3 números, 1 caractere especial e 1 letra maiúscula.");
             return;
         }
         if (password !== confirmPassword) {
-            setError("As senhas não coincidem.");
+            mostrarMensagem("erro", "As senhas não coincidem.");
             return;
         }
-        setStep(4);
-        setTimeout(() => router.push("/"), 2000);
+
+        try {
+            const response = await fetch(`${valorUrl}/cliente/${userId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ senha: password }),
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.mensagem || "Erro ao atualizar a senha");
+
+            mostrarMensagem("sucesso", "Senha redefinida com sucesso!");
+            setStep(3);
+            setTimeout(() => router.push("/"), 2000);
+        } catch (err) {
+            mostrarMensagem("erro", err.message || "Erro inesperado ao redefinir senha.");
+        }
     };
 
     return (
         <div className={styles.bodyTrocarSenha}>
+            {mensagem.texto && (
+                <div className={`${styles.alertaMensagem} ${mensagem.tipo === "erro" ? styles.erro : styles.sucesso}`}>
+                    {mensagem.texto}
+                </div>
+            )}
+
             <div className={styles.campoImagem}>
                 <Image src={'/images/logo.png'} width={50} height={50} alt="Logo" />
                 <p>Web Cars</p>
             </div>
+
             <div className={styles.container}>
+                {step === 0 && (
+                    <>
+                        <p className={styles.mensagemCodveric}>Digite seu e-mail para redefinir a senha:</p>
+                        <input
+                            type="email"
+                            placeholder="Digite seu e-mail"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={styles.inputEmail}
+                        />
+                        <button onClick={handleEnviarCodigo} className={styles.botoesVerf} disabled={loading}>
+                            {loading ? 'Enviando...' : 'Enviar Código'}
+                        </button>
+                    </>
+                )}
+
                 {step === 1 && (
                     <>
-                        <p className={styles.mensagemCodveric}>Enviamos um código para o e-mail "{email}"</p>
+                        <p className={styles.mensagemCodveric}>Digite o código enviado para "{email}"</p>
                         <div className={styles.containerInputsVeric}>
                             {inputs.map((val, index) => (
                                 <input
@@ -90,44 +161,19 @@ export default function PasswordReset() {
                                     id={`input-${index}`}
                                     value={val}
                                     onChange={(e) => handleInputChange(index, e.target.value)}
-                                    onKeyDown={(e) => handleKeyDown(index, e)}
+                                    onPaste={(e) => handleInputChange(index, e.target.value, e)} // ADICIONADO
                                     maxLength={1}
                                     className={styles.inputCodigoverif}
                                 />
                             ))}
                         </div>
-                        {error && <p className={styles.msgErro}>{error}</p>}
-                        <div className={styles.verfContainerBotoes}>
-                            <button onClick={() => setStep(2)} className={styles.botoesVerf}>Não tenho acesso ao e-mail</button>
-                        </div>
-                        <div className={styles.containerBotoesVerfCod}>
-                            <button onClick={verifyCode} className={styles.botoesVerf} id={styles.btnVerifCod}>Verificar Código</button>
-                        </div>
+                        <button onClick={verifyCode} className={styles.botoesVerf}>Verificar Código</button>
                     </>
                 )}
 
                 {step === 2 && (
                     <>
-
-                        <div className={styles.containerAddOutEmail}>
-                            <p className={styles.mensagemCodveric}>Digite um novo e-mail para receber o código:</p>
-                            <input
-                                type="email"
-                                placeholder="Novo e-mail"
-                                value={newEmail}
-                                onChange={(e) => setNewEmail(e.target.value)}
-                                className={styles.inputEmail}
-                            />
-                            <button onClick={() => { setEmail(newEmail); generateCode(); setStep(1); }} className={styles.botoesVerf}>Enviar Código</button>
-                        </div>
-
-                    </>
-                )}
-
-                {step === 3 && (
-                    <>
-                    <div className={styles.containerRedSenha}>
-                    <p className={styles.mensagemCodveric}>Redefinir Senha</p>
+                        <p className={styles.mensagemCodveric}>Redefinir Senha</p>
                         <div className={styles.inputPass}>
                             <input
                                 type={showSenha ? 'text' : 'password'}
@@ -150,13 +196,13 @@ export default function PasswordReset() {
                                 {showConfirmarSenha ? <Eye /> : <EyeOff />}
                             </button>
                         </div>
-                        {error && <p className={styles.msgErro}>{error}</p>}
                         <button onClick={validatePassword} className={styles.botoesVerf}>Redefinir Senha</button>
-                    </div>
                     </>
                 )}
 
-                {step === 4 && <p className={styles.msgOk}>Senha redefinida com sucesso! Redirecionando para a tela principal...</p>}
+                {step === 3 && (
+                    <p className={styles.msgOk}>Senha redefinida com sucesso! Redirecionando...</p>
+                )}
             </div>
         </div>
     );

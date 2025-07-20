@@ -1,174 +1,186 @@
 .bodyTrocarSenha {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  font-family: var(--fonte);
 }
 
-.container {
-    width: 60%;
-    display: flex;
-    flex-direction: column;
-    height: 80%;
-    margin: auto;
-    background-color: var(--corPrincipal);
-    padding: 5% 3%;
-    border-radius: 15px;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+.alertaMensagem {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 15px 25px;
+  border-radius: 10px;
+  font-size: 16px;
+  text-align: center;
+  animation: fadeOut 4s forwards;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-weight: 500;
 }
 
-.containerInputsVeric {
-    display: flex;
-    width: 100%;
-    justify-content: space-around;
+.erro {
+  background-color: var(--vermelho-msg);
+  color: #fff;
+  border: 1px solid var(--vermelho-borda);
 }
 
-.mensagemCodveric {
-    font-size: 20px;
-    margin-bottom: 10px;
-    text-align: center;
+.sucesso {
+  background-color: var(--verde);
+  color: #fff;
+  border: 1px solid var(--verde-borda);
 }
 
-.inputCodigoverif {
-    width: 60px;
-    height: 90px;
-    padding: 2%;
-    font-size: 36px;
-    text-align: center;
-    border-radius: 15px;
-    border: none;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-}
-
-.verfContainerBotoes {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    height: 40%;
-    align-items: flex-start;
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -20px); }
 }
 
 .campoImagem {
-    display: flex;
-    align-items: center;
-    font-size: 24px;
-    font-weight: 600;
-    padding: 1%;
-    width: 100%;
-    position: fixed;
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  font-weight: 600;
+  padding: 16px 32px;
+  width: 100%;
+  position: fixed;
+  gap: 12px;
+  z-index: 10;
 }
 
-.containerBotoesVerfCod {
-    display: flex;
-    width: 100%;
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 40px 30px;
+  background-color: var(--corPrincipal);
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-#btnVerifCod {
-    margin: auto;
-    width: 70%;
+.mensagemCodveric {
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: 500;
 }
 
+.inputEmail {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  height: 45px;
+  padding: 0 16px;
+  font-size: 16px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.inputEmail:focus {
+  outline: 2px solid var(--vermelho-hover);
+}
 
 .botoesVerf {
-    padding: 15px;
-    margin: 10px 0;
-    background-color: #c9302c;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    border-radius: 15px;
+  padding: 14px;
+  background-color: var(--vermelho);
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .botoesVerf:hover {
-    background-color: #d9534f;
+  background-color: var(--vermelho-hover);
 }
 
-
-.inputEmail {
-    width: 60%;
-    align-items: center;
-    border: none;
-    border-radius: 15px;
-    height: 40px;
-    padding: 2%;
+.containerInputsVeric {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
-.containerAddOutEmail {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: space-around;
-    align-items: center;
+.inputCodigoverif {
+  width: 60px;
+  height: 80px;
+  font-size: 32px;
+  text-align: center;
+  border-radius: 12px;
+  border: none;
+  background-color: white;
+  box-shadow: 0px 2px 10px rgba(0,0,0,0.05);
 }
 
-.containerRedSenha {
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
+.inputCodigoverif:focus {
+  outline: 2px solid var(--vermelho-hover);
 }
 
 .inputPass {
-    background-color: var(--corPrecimento);
-    width: 70%;
-    padding: 0%;
-    height: auto;
-    display: flex;
-    border-radius: 15px;
+  background-color: var(--corPrecimento);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .inputPass input {
-    width: 90%;
-    height: 100%;
-    margin: 0;
-    top: 0;
-    padding: 2%;
-    box-sizing: border-box;
-    border: none;
-    border-radius: 15px;
+  flex: 1;
+  height: 45px;
+  border: none;
+  padding: 0 16px;
+  border-radius: 12px 0 0 12px;
+  font-size: 16px;
+  background-color: transparent;
 }
 
-.inputPass button{
-    width: 10%;
-    padding: 2%;
-    height: 100%;
-    align-items: center;
-    display: flex;
-    border: none;
-    outline: none;
-    background-color: transparent;
-    cursor: pointer;
+.inputPass input:focus {
+  outline: none;
 }
 
-.inputPass input:focus{
-    outline: none;
+.inputPass button {
+  padding: 0 12px;
+  height: 45px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-
-.msgErro{
-    width: 80%;
-    background-color: rgba(197, 33, 33, 0.651);
-    padding: 1%;
-    border: 2px solid rgb(167, 21, 21);
-    color: white;
-    border-radius: 15px;
-    text-align: center;
-    margin: 0 auto;
-    margin-top: 10px;
+.msgErro {
+  background-color: rgba(255, 77, 79, 0.2);
+  border: 1px solid var(--vermelho-borda);
+  color: var(--vermelho-msg);
+  padding: 12px 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin: 10px auto;
+  width: 100%;
+  font-weight: 500;
 }
 
-.msgOk{
-    width: 80%;
-    height: 80%;
-    background-color: rgba(47, 197, 33, 0.651);
-    padding: 1%;
-    border: 2px solid rgb(62, 167, 21);
-    color: white;
-    border-radius: 15px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    margin: auto;
-    font-size: 20px;
+.msgOk {
+  background-color: rgba(76, 175, 80, 0.2);
+  border: 1px solid var(--verde-borda);
+  color: var(--verde);
+  padding: 16px 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

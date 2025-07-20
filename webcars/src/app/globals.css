@@ -6,6 +6,12 @@
   --corIconeImagem: #FF1300;
   --corDeFundo: #EFEFEF;
   --cor-barra-pesquisa: #ebebeb;
+  --vermelho: #c9302c;
+  --vermelho-hover: #d9534f;
+  --verde: #4caf50;
+  --verde-borda: #388e3c;
+  --vermelho-msg: #ff4d4f;
+  --vermelho-borda: #d9363e;
 }
 
 * {
@@ -15,7 +21,8 @@
   font-family: "Poppins", sans-serif;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
 }
@@ -29,13 +36,17 @@ body {
 
 main {
   flex: 1;
-  background-color: #EFEFEF; /* opcional */
-  display: flex;             /* se quiser centralizar conteúdo */
-  justify-content: center;   /* opcional */
-  align-items: center;       /* opcional */
+  background-color: #EFEFEF;
+  /* opcional */
+  display: flex;
+  /* se quiser centralizar conteúdo */
+  justify-content: center;
+  /* opcional */
+  align-items: center;
+  /* opcional */
 }
 
-.main > h1 {
+.main>h1 {
   margin: auto;
 }
 
@@ -51,10 +62,10 @@ input[type="password"]::-ms-clear {
 }
 
 hr {
-  border: none; 
+  border: none;
   width: 90%;
-  height: 2px; 
-  background-color: #a4a4a4; 
-  margin: 20px auto; 
+  height: 2px;
+  background-color: #a4a4a4;
+  margin: 20px auto;
   border-radius: 5px;
 }
