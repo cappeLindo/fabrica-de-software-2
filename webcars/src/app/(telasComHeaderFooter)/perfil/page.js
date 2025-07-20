@@ -283,13 +283,18 @@ const Perfil = () => {
         <main className={styles.conteudo}>
           <form className={styles.informaçoesPessoais} onSubmit={handleSalvarAlteracoes}>
             <h2>Meus dados</h2>
-            <div className={styles.informaçoes}>
+            {/* Aqui alterei para usar display flex e espaçamento entre inputs */}
+            <div
+              className={styles.informaçoes}
+              style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}
+            >
               <input
                 type="text"
                 placeholder="Nome completo"
                 value={userData.nome || ''}
                 onChange={(e) => handleInputChange(e, 'nome')}
                 disabled={logicPerfil}
+                style={{ flexGrow: 1, minWidth: '200px' }} // deixa o input responsivo e largo
               />
               <input
                 type="email"
@@ -297,15 +302,20 @@ const Perfil = () => {
                 value={userData.email || ''}
                 onChange={(e) => handleInputChange(e, 'email')}
                 disabled={logicPerfil}
+                style={{ flexGrow: 1, minWidth: '200px' }}
               />
             </div>
-            <div className={styles.informaçoes}>
+            <div
+              className={styles.informaçoes}
+              style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}
+            >
               <input
                 type="text"
                 placeholder={userType === 'concessionaria' ? 'CNPJ' : 'CPF'}
                 value={userType === 'concessionaria' ? (userData.cnpj || '') : (userData.cpf || '')}
                 onChange={(e) => handleInputChange(e, userType === 'concessionaria' ? 'cnpj' : 'cpf')}
                 disabled={logicPerfil}
+                style={{ flexGrow: 1, minWidth: '200px' }}
               />
               <input
                 type="text"
@@ -313,6 +323,7 @@ const Perfil = () => {
                 value={userData.data_nascimento || ''}
                 onChange={(e) => handleInputChange(e, 'data_nascimento')}
                 disabled={logicPerfil}
+                style={{ flexGrow: 1, minWidth: '200px' }}
               />
             </div>
 
@@ -320,13 +331,17 @@ const Perfil = () => {
               <>
                 <hr className={styles.hr} />
                 <h2>Endereço</h2>
-                <div className={styles.informaçoes}>
+                <div
+                  className={styles.informaçoes}
+                  style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}
+                >
                   <input
                     type="text"
                     placeholder="CEP"
                     value={userData.cep || ''}
                     onChange={(e) => handleInputChange(e, 'cep')}
                     disabled={logicPerfil}
+                    style={{ flexGrow: 1, minWidth: '200px' }}
                   />
                   <input
                     type="text"
@@ -334,15 +349,20 @@ const Perfil = () => {
                     value={userData.estado || ''}
                     onChange={(e) => handleInputChange(e, 'estado')}
                     disabled={logicPerfil}
+                    style={{ flexGrow: 1, minWidth: '200px' }}
                   />
                 </div>
-                <div className={styles.informaçoes}>
+                <div
+                  className={styles.informaçoes}
+                  style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}
+                >
                   <input
                     type="text"
                     placeholder="Cidade"
                     value={userData.cidade || ''}
                     onChange={(e) => handleInputChange(e, 'cidade')}
                     disabled={logicPerfil}
+                    style={{ flexGrow: 1, minWidth: '200px' }}
                   />
                   <input
                     type="text"
@@ -350,15 +370,20 @@ const Perfil = () => {
                     value={userData.bairro || ''}
                     onChange={(e) => handleInputChange(e, 'bairro')}
                     disabled={logicPerfil}
+                    style={{ flexGrow: 1, minWidth: '200px' }}
                   />
                 </div>
-                <div className={styles.informaçoes}>
+                <div
+                  className={styles.informaçoes}
+                  style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}
+                >
                   <input
                     type="text"
                     placeholder="Rua"
                     value={userData.endereco || ''}
                     onChange={(e) => handleInputChange(e, 'endereco')}
                     disabled={logicPerfil}
+                    style={{ flexGrow: 1, minWidth: '200px' }}
                   />
                   <input
                     type="text"
@@ -366,6 +391,7 @@ const Perfil = () => {
                     value={userData.numero || ''}
                     onChange={(e) => handleInputChange(e, 'numero')}
                     disabled={logicPerfil}
+                    style={{ flexGrow: 1, minWidth: '200px' }}
                   />
                 </div>
               </>
@@ -374,13 +400,14 @@ const Perfil = () => {
             <hr className={styles.hr} />
 
             <h2>Telefone</h2>
-            <div className={styles.informaçoes}>
+            <div className={styles.informaçoes} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <input
                 type="text"
                 placeholder="+(00) 00 00000-0000"
                 value={userData.telefone || ''}
                 onChange={(e) => handleInputChange(e, 'telefone', 0)}
                 disabled={logicPerfil}
+                style={{ flexGrow: 1, minWidth: '200px' }}
               />
             </div>
 

@@ -122,9 +122,6 @@ const TelaDaConcessionaria = () => {
           <div className={styles.itemContato}>
             <i className="bi bi-instagram"></i> Veja mais sobre
           </div>
-          <div className={styles.itemContato}>
-            <i className="bi bi-facebook"></i> Veja mais sobre
-          </div>
         </div>
       </section>
 
