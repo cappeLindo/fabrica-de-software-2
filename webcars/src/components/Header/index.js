@@ -45,7 +45,6 @@ const SelectEstados = () => {
   );
 };
 
-
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [busca, setBusca] = useState('');
@@ -58,7 +57,6 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Garante que só monta no cliente
   useEffect(() => {
     setHasMounted(true);
     const storedId = Cookies.get('id');
@@ -66,7 +64,6 @@ export default function Header() {
     const storedTypeUser = Cookies.get('typeUser');
     settypeUser(storedTypeUser)
     if (storedId && storedTypeUser) {
-      console.log(`${valorUrl}/${storedTypeUser}/imagem/${storedId}`)
       fetch(`${valorUrl}/${storedTypeUser}/imagem/${storedId}`).then((res) => {
         if (res.ok) {
           setImagemPerfil(`${valorUrl}/${storedTypeUser}/imagem/${storedId}`);
@@ -76,7 +73,6 @@ export default function Header() {
       });
     }
   }, []);
-
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -115,7 +111,6 @@ export default function Header() {
 
     try {
       const url = `${valorUrl}/carro/`;
-      console.log('Buscando carros em:', url);
 
       const res = await fetch(url, {
         headers: Cookies.get('token') ? { Authorization: `Bearer ${Cookies.get('token')}` } : {},
@@ -126,8 +121,6 @@ export default function Header() {
       }
 
       const data = await res.json();
-      console.log('Resposta da API:', data);
-
       const carrosArray = Array.isArray(data) ? data : data.dados || data.results || [];
       const carrosFiltrados = carrosArray.filter((carro) =>
         carro.carro_nome.toLowerCase().includes(termo.toLowerCase())
@@ -139,7 +132,6 @@ export default function Header() {
       setCarros([]);
     }
   };
-
 
   return (
     <>
@@ -162,20 +154,20 @@ export default function Header() {
             <Link href={userId ? `/perfil` : '/telaLogin'}>Perfil</Link>
             <button onClick={handleLogout}>Sair</button>
           </nav>
+
           <div className={styles.localRegiao}>
             <i className='bi bi-geo-fill'></i>
             <SelectEstados />
           </div>
         </div>
 
-
         {pathname !== '/' && (
           <div className={`${styles.voltar} ${menuOpen ? styles.hidden : ''}`}>
-            <Link href='/'>Voltar</Link>
+            <button onClick={() => router.back()} className={styles.botaoVoltar}>
+              Voltar
+            </button>
           </div>
         )}
-
-
 
         <div className={styles.barraPesquisa}>
           <input
@@ -192,6 +184,7 @@ export default function Header() {
             <i className='bi bi-search'></i>
           </button>
         </div>
+
         <div className={styles.elementosDireita}>
           {hasMounted && !userId && (
             <div className={styles.entrarLogar}>
@@ -203,11 +196,11 @@ export default function Header() {
           {hasMounted && (
             <div className={styles.perfilCarrinho}>
               {typeUser == "cliente" &&
-              <div className={styles.carrinho}>
-                <Link href='/TelaDesejos' className={styles.perfil}>
-                  <Image src={CarrinhoImg} alt='carrinho' width={50} height={50} />
-                </Link>
-              </div>}
+                <div className={styles.carrinho}>
+                  <Link href='/TelaDesejos' className={styles.perfil}>
+                    <Image src={CarrinhoImg} alt='carrinho' width={50} height={50} />
+                  </Link>
+                </div>}
               <div className={styles.perfil}>
                 <Link href={userId ? `/perfil` : '/telaLogin'} className={styles.linkPerfil}>
                   {imagemPerfil ? (
@@ -241,4 +234,4 @@ export default function Header() {
       )}
     </>
   );
-};
+}
