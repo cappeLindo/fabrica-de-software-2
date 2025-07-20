@@ -319,11 +319,10 @@ const Perfil = () => {
               />
               <input
                 type="text"
-                placeholder="Data de nascimento"
-                value={userData.data_nascimento || ''}
-                onChange={(e) => handleInputChange(e, 'data_nascimento')}
-                disabled={logicPerfil}
-                
+                placeholder="+(00) 00 00000-0000"
+                value={userData.telefone || ''}
+                onChange={(e) => handleInputChange(e, 'telefone', 0)}
+                disabled={logicPerfil}  
               />
             </div>
 
@@ -392,17 +391,6 @@ const Perfil = () => {
             )}
 
             <hr className={styles.hr} />
-
-            <h2>Telefone</h2>
-            <div className={styles.informaçoes} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <input
-                type="text"
-                placeholder="+(00) 00 00000-0000"
-                value={userData.telefone || ''}
-                onChange={(e) => handleInputChange(e, 'telefone', 0)}
-                disabled={logicPerfil}  
-              />
-            </div>
 
             <div className={styles.botaoSalvar}>
               <button
