@@ -202,11 +202,12 @@ export default function Header() {
 
           {hasMounted && (
             <div className={styles.perfilCarrinho}>
+              {typeUser == "cliente" &&
               <div className={styles.carrinho}>
                 <Link href='/TelaDesejos' className={styles.perfil}>
                   <Image src={CarrinhoImg} alt='carrinho' width={50} height={50} />
                 </Link>
-              </div>
+              </div>}
               <div className={styles.perfil}>
                 <Link href={userId ? `/perfil` : '/telaLogin'} className={styles.linkPerfil}>
                   {imagemPerfil ? (

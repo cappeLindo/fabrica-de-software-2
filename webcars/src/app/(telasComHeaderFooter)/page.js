@@ -8,6 +8,7 @@ import styles from './page.module.css';
 import valorUrl from '../../../rotaUrl.js';
 import { Heart } from "lucide-react";
 import Cookies from 'js-cookie';
+import CardCarro from '../../components/CardCarro'; // ajuste o caminho conforme a organização da sua pasta
 export default function Home() {
   const [concessionarias, setConcessionarias] = useState([]);
   const [enderecos, setEnderecos] = useState([]);
@@ -204,39 +205,14 @@ export default function Home() {
         {!loading && !error && (
           <div className={styles.fundo_carros}>
             {carrosFiltrados.length === 0 && <p>Nenhum carro encontrado para este estado.</p>}
-            {carrosFiltrados.map((carro) => {
-              const isFavorito = favoritos.includes(carro.id);
-
-              return (
-                <div className={styles.card_carros} key={carro.id}>
-                  <div
-                    className={`${styles.heart_icon} ${isFavorito ? styles.favoritado : ''}`}
-                    onClick={() => toggleFavorito(carro.id)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={e => { if (e.key === 'Enter') toggleFavorito(carro.id); }}
-                    aria-label={isFavorito ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-                  >
-                    <Heart
-                      size={20}
-                      color={isFavorito ? '#fff' : '#aaa'}
-                      fill={isFavorito ? '#e63946' : 'none'}
-                    />
-                  </div>
-
-                  <Image
-                    src={carro.imageUrl}
-                    alt={carro.carro_nome || carro.nome || 'Imagem do carro'}
-                    width={160}
-                    height={120}
-                  />
-                  <p>{carro.carro_nome || carro.nome}</p>
-                  <button>
-                    <Link href={`/descricaoProduto?id=${carro.id}`}>veja mais</Link>
-                  </button>
-                </div>
-              );
-            })}
+            {carrosFiltrados.map((carro) => (
+              <CardCarro
+                key={carro.id}
+                carro={carro}
+                isFavorito={favoritos.includes(carro.id)}
+                onToggleFavorito={toggleFavorito}
+              />
+            ))}
           </div>
         )}
       </div>

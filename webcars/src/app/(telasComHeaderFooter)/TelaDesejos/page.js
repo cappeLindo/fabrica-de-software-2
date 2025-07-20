@@ -6,7 +6,7 @@ import Image from "next/image";
 import valorUrl from "../../../../rotaUrl";
 import Cookies from 'js-cookie';
 import { Heart } from "lucide-react";
-
+import CardCarro from "@/components/CardCarro";
 export default function TelaDesejos() {
     const [carrosFavoritos, setCarrosFavoritos] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -96,39 +96,13 @@ export default function TelaDesejos() {
                 <div className={style.fundoCarro}>
 
                     {carrosFavoritos.length === 0 && <p>Você não possui carros favoritos.</p>}
-
                     {carrosFavoritos.map((carro) => (
-                        <div key={carro.carro_id} className={style.cardCarros}>
-
-                            <div className={`${style.heart_icon} ${isFavorito ? style.favoritado : ''}`}
-                                onClick={() => toggleFavorito(carro.carro_id)}
-                                role="button"
-                                tabIndex={0}
-                                onKeyDown={e => { if (e.key === 'Enter') toggleFavorito(carro.carro_id); }}
-                                aria-label="Remover dos favoritos"
-                                style={{ cursor: 'pointer', position: 'absolute', top: '10px', right: '10px' }}
-                            >
-                                <Heart                       size={20}
-                      color={isFavorito ? '#fff' : '#aaa'}
-                      fill={isFavorito ? '#e63946' : 'none'} />
-                            </div>
-
-                            <div className={style.imageContainer}>
-                                <Image
-                                    src={carro.imageUrl}
-                                    alt={carro.carro_nome || carro.nome || 'Imagem do carro'}
-                                    width={300}
-                                    height={200}
-                                    className={style.imagemCarro}
-                                />
-                            </div>
-
-                            <p>{carro.carro_nome || carro.nome}</p>
-
-                            <Link href={`/descricaoProduto?id=${carro.carro_id}`}>
-                                <button>Veja mais</button>
-                            </Link>
-                        </div>
+                        <CardCarro
+                            key={carro.carro_id}
+                            carro={carro}
+                            isFavorito={true}
+                            onToggleFavorito={() => toggleFavorito(carro.carro_id)}
+                        />
                     ))}
                 </div>
             </div>
