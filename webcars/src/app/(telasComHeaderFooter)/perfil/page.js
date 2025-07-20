@@ -5,8 +5,10 @@ import { useSearchParams } from 'next/navigation';
 import styles from './perfil.module.css';
 import valorUrl from "../../../../rotaUrl.js";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 const Perfil = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const userId = Cookies.get('id');
   const userType = Cookies.get('typeUser');
@@ -23,6 +25,7 @@ const Perfil = () => {
     if (!userId) {
       setError('ID do usuário não fornecido.');
       setLoading(false);
+      setTimeout(() => router.push("/"), 2000);
       return;
     }
 
@@ -37,8 +40,9 @@ const Perfil = () => {
           ...dataUser.dados,
           cpf_cnpj: userType === 'concessionaria' ? dataUser.dados.cnpj : dataUser.dados.cpf,
           endereco: dataUser.dados.rua,
-          cep: dataUser.dados.cep,
-          numero: dataUser.dados.numero
+          cep: dataUser.dados.cep || "Não informado",
+          numero: dataUser.dados.numero,
+          estado: ufParaEstadoCompleto(dataUser.dados.estado)
         });
 
         const resImage = await fetch(`${API_BASE_URL}/${userType}/imagem/${userId}`);
@@ -83,6 +87,40 @@ const Perfil = () => {
       setError(err.message);
     }
   };
+
+  const ufParaEstadoCompleto = (uf) => {
+    switch (uf.toUpperCase()) {
+      case 'AC': return 'Acre';
+      case 'AL': return 'Alagoas';
+      case 'AP': return 'Amapá';
+      case 'AM': return 'Amazonas';
+      case 'BA': return 'Bahia';
+      case 'CE': return 'Ceará';
+      case 'DF': return 'Distrito Federal';
+      case 'ES': return 'Espírito Santo';
+      case 'GO': return 'Goiás';
+      case 'MA': return 'Maranhão';
+      case 'MT': return 'Mato Grosso';
+      case 'MS': return 'Mato Grosso do Sul';
+      case 'MG': return 'Minas Gerais';
+      case 'PA': return 'Pará';
+      case 'PB': return 'Paraíba';
+      case 'PR': return 'Paraná';
+      case 'PE': return 'Pernambuco';
+      case 'PI': return 'Piauí';
+      case 'RJ': return 'Rio de Janeiro';
+      case 'RN': return 'Rio Grande do Norte';
+      case 'RS': return 'Rio Grande do Sul';
+      case 'RO': return 'Rondônia';
+      case 'RR': return 'Roraima';
+      case 'SC': return 'Santa Catarina';
+      case 'SP': return 'São Paulo';
+      case 'SE': return 'Sergipe';
+      case 'TO': return 'Tocantins';
+      default: return uf;
+    }
+  };
+
 
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
@@ -165,7 +203,7 @@ const Perfil = () => {
   return (
     <>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-      
+
       <div className={`${styles.janelaExclusao} ${isModalVisivel ? styles.mostrar : ''}`} id="janelaExclusao">
         <div className={styles.exclusao}>
           <h1>Atenção!</h1>
@@ -201,8 +239,8 @@ const Perfil = () => {
                 style={{ cursor: !logicPerfil ? 'pointer' : 'default' }}
               ></i>
             )}
-            <button 
-              className={logicPerfil ? styles.botaoEditar : styles.botaoEditarNclick} 
+            <button
+              className={logicPerfil ? styles.botaoEditar : styles.botaoEditarNclick}
               onClick={() => setLogicPerfil(!logicPerfil)}
             >
               {logicPerfil ? 'Editar perfil' : 'Cancelar edição'}
@@ -211,10 +249,11 @@ const Perfil = () => {
           <div className={styles.menu}>
             <ul className={styles.ul}>
               <li>
-                <Link href="/TelaDesejos">
-                  <button className={styles.botaoMenu}>Lista de desejo</button>
-                </Link>
-
+                {userType == "cliente" &&
+                  <Link href="/TelaDesejos">
+                    <button className={styles.botaoMenu}>Lista de desejo</button>
+                  </Link>
+                }
                 {userType === 'cliente' && (
                   <Link href="/MeusAlertas">
                     <button className={styles.botaoMenu}>Meus alertas</button>
@@ -245,34 +284,34 @@ const Perfil = () => {
           <form className={styles.informaçoesPessoais} onSubmit={handleSalvarAlteracoes}>
             <h2>Meus dados</h2>
             <div className={styles.informaçoes}>
-              <input 
-                type="text" 
-                placeholder="Nome completo" 
-                value={userData.nome || ''} 
-                onChange={(e) => handleInputChange(e, 'nome')} 
+              <input
+                type="text"
+                placeholder="Nome completo"
+                value={userData.nome || ''}
+                onChange={(e) => handleInputChange(e, 'nome')}
                 disabled={logicPerfil}
               />
-              <input 
-                type="email" 
-                placeholder="Email" 
-                value={userData.email || ''} 
-                onChange={(e) => handleInputChange(e, 'email')} 
+              <input
+                type="email"
+                placeholder="Email"
+                value={userData.email || ''}
+                onChange={(e) => handleInputChange(e, 'email')}
                 disabled={logicPerfil}
               />
             </div>
             <div className={styles.informaçoes}>
-              <input 
-                type="text" 
-                placeholder={userType === 'concessionaria' ? 'CNPJ' : 'CPF'} 
-                value={userType === 'concessionaria' ? (userData.cnpj || '') : (userData.cpf || '')} 
-                onChange={(e) => handleInputChange(e, userType === 'concessionaria' ? 'cnpj' : 'cpf')} 
+              <input
+                type="text"
+                placeholder={userType === 'concessionaria' ? 'CNPJ' : 'CPF'}
+                value={userType === 'concessionaria' ? (userData.cnpj || '') : (userData.cpf || '')}
+                onChange={(e) => handleInputChange(e, userType === 'concessionaria' ? 'cnpj' : 'cpf')}
                 disabled={logicPerfil}
               />
-              <input 
-                type="text" 
-                placeholder="Data de nascimento" 
-                value={userData.data_nascimento || ''} 
-                onChange={(e) => handleInputChange(e, 'data_nascimento')} 
+              <input
+                type="text"
+                placeholder="Data de nascimento"
+                value={userData.data_nascimento || ''}
+                onChange={(e) => handleInputChange(e, 'data_nascimento')}
                 disabled={logicPerfil}
               />
             </div>
@@ -282,50 +321,50 @@ const Perfil = () => {
                 <hr className={styles.hr} />
                 <h2>Endereço</h2>
                 <div className={styles.informaçoes}>
-                  <input 
-                    type="text" 
-                    placeholder="CEP" 
-                    value={userData.cep || ''} 
-                    onChange={(e) => handleInputChange(e, 'cep')} 
+                  <input
+                    type="text"
+                    placeholder="CEP"
+                    value={userData.cep || ''}
+                    onChange={(e) => handleInputChange(e, 'cep')}
                     disabled={logicPerfil}
                   />
-                  <input 
-                    type="text" 
-                    placeholder="Estado" 
-                    value={userData.estado || ''} 
-                    onChange={(e) => handleInputChange(e, 'estado')} 
-                    disabled={logicPerfil}
-                  />
-                </div>
-                <div className={styles.informaçoes}>
-                  <input 
-                    type="text" 
-                    placeholder="Cidade" 
-                    value={userData.cidade || ''} 
-                    onChange={(e) => handleInputChange(e, 'cidade')} 
-                    disabled={logicPerfil}
-                  />
-                  <input 
-                    type="text" 
-                    placeholder="Bairro" 
-                    value={userData.bairro || ''} 
-                    onChange={(e) => handleInputChange(e, 'bairro')} 
+                  <input
+                    type="text"
+                    placeholder="Estado"
+                    value={userData.estado || ''}
+                    onChange={(e) => handleInputChange(e, 'estado')}
                     disabled={logicPerfil}
                   />
                 </div>
                 <div className={styles.informaçoes}>
-                  <input 
-                    type="text" 
-                    placeholder="Rua" 
-                    value={userData.endereco || ''} 
-                    onChange={(e) => handleInputChange(e, 'endereco')} 
+                  <input
+                    type="text"
+                    placeholder="Cidade"
+                    value={userData.cidade || ''}
+                    onChange={(e) => handleInputChange(e, 'cidade')}
                     disabled={logicPerfil}
                   />
-                  <input 
-                    type="text" 
-                    placeholder="Número" 
-                    value={userData.numero || ''} 
-                    onChange={(e) => handleInputChange(e, 'numero')} 
+                  <input
+                    type="text"
+                    placeholder="Bairro"
+                    value={userData.bairro || ''}
+                    onChange={(e) => handleInputChange(e, 'bairro')}
+                    disabled={logicPerfil}
+                  />
+                </div>
+                <div className={styles.informaçoes}>
+                  <input
+                    type="text"
+                    placeholder="Rua"
+                    value={userData.endereco || ''}
+                    onChange={(e) => handleInputChange(e, 'endereco')}
+                    disabled={logicPerfil}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Número"
+                    value={userData.numero || ''}
+                    onChange={(e) => handleInputChange(e, 'numero')}
                     disabled={logicPerfil}
                   />
                 </div>
@@ -334,28 +373,21 @@ const Perfil = () => {
 
             <hr className={styles.hr} />
 
-            <h2>Telefones</h2>
+            <h2>Telefone</h2>
             <div className={styles.informaçoes}>
-              <input 
-                type="text" 
-                placeholder="+(00) 00 00000-0000" 
-                value={userData.telefone || ''} 
-                onChange={(e) => handleInputChange(e, 'telefone', 0)} 
-                disabled={logicPerfil}
-              />
-              <input 
-                type="text" 
-                placeholder="+(00) 00 00000-0000" 
-                value={userData.telefones?.[1] || ''} 
-                onChange={(e) => handleInputChange(e, 'telefones', 1)} 
+              <input
+                type="text"
+                placeholder="+(00) 00 00000-0000"
+                value={userData.telefone || ''}
+                onChange={(e) => handleInputChange(e, 'telefone', 0)}
                 disabled={logicPerfil}
               />
             </div>
 
             <div className={styles.botaoSalvar}>
-              <button 
-                disabled={logicPerfil} 
-                className={logicPerfil ? styles.btnNclicavel : styles.btnClicavel} 
+              <button
+                disabled={logicPerfil}
+                className={logicPerfil ? styles.btnNclicavel : styles.btnClicavel}
                 type="submit"
               >
                 Salvar Alterações

@@ -5,13 +5,14 @@ import Cookies from 'js-cookie';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './meus-produtos.module.css';
+import valorUrl from '../../../../rotaUrl.js';
 
 const MeusProdutos = () => {
   const [carros, setCarros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState(null);
   const [showButtons, setShowButtons] = useState(null);
-  const API_BASE_URL = 'https://webcars.dev.vilhena.ifro.edu.br/api';
+  const API_BASE_URL = valorUrl;
 
   const buscarMeusCarros = async () => {
     try {
@@ -35,6 +36,7 @@ const MeusProdutos = () => {
       } else {
         const data = await res.json();
         setCarros(data.dados || []);
+        console.log(carros)
       }
     } catch (err) {
       setErro(err.message);
@@ -91,11 +93,11 @@ const MeusProdutos = () => {
           carros.map((carro, index) => (
             <div key={carro.id} className={styles.cardCarros}>
               <div className={styles.imageContainer}>
-                <Image
-                  src={`/images/${carro.imagem || 'placeholder-car.png'}`}
-                  alt={carro.nome}
-                  width={300}
-                  height={200}
+                <img
+                  src={carro.imagens
+                    ? `${valorUrl}/carro/imagem/${carro.imagens[0]}`
+                    : '/images/placeholder-car.png'}
+                  alt={carro.carro_nome}
                   className={styles.imagemCarro}
                 />
                 <i
@@ -113,7 +115,7 @@ const MeusProdutos = () => {
                   </div>
                 )}
               </div>
-              <p>{carro.nome}</p>
+              <p>{carro.carro_nome}</p>
               <Link href={`/descricaoProduto?id=${carro.id}`}>
                 <button className={styles.bot}>Veja mais</button>
               </Link>

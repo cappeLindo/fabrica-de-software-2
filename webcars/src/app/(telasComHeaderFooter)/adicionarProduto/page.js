@@ -94,79 +94,95 @@ export default function AdicionarProduto() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setErrorMessage(""); // limpa mensagem anterior
+    e.preventDefault();
+    setErrorMessage(""); // limpa mensagem anterior
 
-  try {
-    // Validações básicas obrigatórias
-    if (!valorNome || !valorAno || !valorCondicao || !valorValor || !valorQuilometragem || !valorModelo) {
-      setErrorMessage("Preencha todos os campos obrigatórios.");
+    try {
+      // Validações obrigatórias
+      if (!valorNome || !valorAno || !valorCondicao || !valorValor || !valorQuilometragem || !valorModelo || !valorCambio || !valorCor || !valorCategoria || !valorMarca) {
+        setErrorMessage("Preencha todos os campos obrigatórios.");
+        setTimeout(() => setErrorMessage(""), 2000);
+        return;
+      }
+
+      // Se o carro NÃO for novo, data de compra é obrigatória
+      if (valorCondicao !== 'Novo' && !valorDataCompra) {
+        setErrorMessage("Preencha a data de compra.");
+        setTimeout(() => setErrorMessage(""), 2000);
+        return;
+      }
+
+      // Se IPVA estiver marcado, a data do IPVA é obrigatória
+      if (checkboxValues.ipva && !valorDataIpva) {
+        setErrorMessage("Preencha a data de vencimento do IPVA.");
+        setTimeout(() => setErrorMessage(""), 2000);
+        return;
+      }
+
+      // Formatação dos valores
+      const valorConvertido = parseFloat(
+        valorValor.replace(/\s/g, "").replace("R$", "").replace(/\./g, "").replace(",", ".")
+      );
+      const quilometragemConvertida = parseInt(
+        valorQuilometragem.replace(/\./g, "").replace(",", "").replace(/\s/g, "").replace("km", ""), 10
+      );
+
+      if (isNaN(valorConvertido) || isNaN(quilometragemConvertida)) {
+        setErrorMessage("Informe valores válidos para 'Valor' e 'Quilometragem'.");
+        setTimeout(() => setErrorMessage(""), 2000);
+        return;
+      }
+
+      const form = new FormData();
+      form.append("nome", valorNome);
+      form.append("ano", valorAno);
+      form.append("condicao", valorCondicao);
+      form.append("valor", valorConvertido);
+      form.append("ipva_pago", valorIpva);
+
+      // Só envia data_ipva se houver
+      if (valorDataIpva) form.append("data_ipva", valorDataIpva);
+
+      // Só envia data_compra se necessário
+      if (valorDataCompra) form.append("data_compra", valorDataCompra);
+
+      form.append("detalhes_veiculo", valorDetalhes);
+      form.append("blindagem", valorBlindagem);
+      form.append("quilometragem", quilometragemConvertida);
+      form.append("cor_id", valorCor);
+      form.append("aro_id", valorAro);
+      form.append("categoria_id", valorCategoria);
+      form.append("marca_id", valorMarca);
+      form.append("modelo_id", valorModelo);
+      form.append("combustivel_id", valorCombustivel);
+      form.append("cambio_id", valorCambio);
+
+      imagensTemporarias.forEach((imagem) => {
+        form.append("imagensCarro", imagem);
+      });
+
+      const response = await fetch(`${valorUrl}/carro/${valorIdConcessionaria}`, {
+        method: "POST",
+        body: form,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const erro = data?.message || data?.erro || "Erro desconhecido ao tentar cadastrar.";
+        setErrorMessage(erro);
+        setTimeout(() => setErrorMessage(""), 2000);
+        return;
+      }
+
+      setShowMensagem(true);
+    } catch (err) {
+      console.error("Erro no envio:", err);
+      setErrorMessage("Erro ao enviar os dados. Verifique sua conexão ou tente novamente.");
       setTimeout(() => setErrorMessage(""), 2000);
-      return;
     }
+  };
 
-    // Formatação dos valores
-    const valorConvertido = parseFloat(
-      valorValor.replace(/\s/g, "").replace("R$", "").replace(/\./g, "").replace(",", ".")
-    );
-    const quilometragemConvertida = parseInt(
-      valorQuilometragem.replace(/\./g, "").replace(",", "").replace(/\s/g, "").replace("km", ""), 10
-    );
-
-    if (isNaN(valorConvertido) || isNaN(quilometragemConvertida)) {
-      setErrorMessage("Informe valores válidos para 'Valor' e 'Quilometragem'.");
-      setTimeout(() => setErrorMessage(""), 2000);
-      return;
-    }
-
-    const form = new FormData();
-    form.append("nome", valorNome);
-    form.append("ano", valorAno);
-    form.append("condicao", valorCondicao);
-    form.append("valor", valorConvertido);
-    form.append("ipva_pago", valorIpva);
-    form.append("data_ipva", valorDataIpva);
-    form.append("data_compra", valorDataCompra);
-    form.append("detalhes_veiculo", valorDetalhes);
-    form.append("blindagem", valorBlindagem);
-    form.append("quilometragem", quilometragemConvertida);
-    form.append("cor_id", valorCor);
-    form.append("aro_id", valorAro);
-    form.append("categoria_id", valorCategoria);
-    form.append("marca_id", valorMarca);
-    form.append("modelo_id", valorModelo);
-    form.append("combustivel_id", valorCombustivel);
-    form.append("cambio_id", valorCambio);
-
-    imagensTemporarias.forEach((imagem) => {
-      form.append("imagensCarro", imagem);
-    });
-
-    for (let pair of form.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
-
-    const response = await fetch(`${valorUrl}/carro/${valorIdConcessionaria}`, {
-      method: "POST",
-      body: form,
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      const erro = data?.message || data?.erro || "Erro desconhecido ao tentar cadastrar.";
-      setErrorMessage(erro);
-      setTimeout(() => setErrorMessage(""), 2000);
-      return;
-    }
-
-    setShowMensagem(true);
-  } catch (err) {
-    console.error("Erro no envio:", err);
-    setErrorMessage("Erro ao enviar os dados. Verifique sua conexão ou tente novamente.");
-    setTimeout(() => setErrorMessage(""), 2000);
-  }
-};
 
 
   const reload = () => {
@@ -230,7 +246,7 @@ export default function AdicionarProduto() {
 
   return (
     <div className={styles.mainAdicionarVeiculo}>
-      
+
       <form onSubmit={handleSubmit}>
         <h2 className={styles.titulo}>Adicionar produto</h2>
         <div className={styles.fundoCampoAdicionarVeiculo}>
@@ -367,11 +383,10 @@ export default function AdicionarProduto() {
             {exibirData && (
               <div className={styles.filhoCampoUmaColuna}>
                 <div className={styles.campodePrenchimento}>
-                  <label className={styles.label}>Data IPVA</label>
+                  <label className={styles.label}>Data de vencimento do IPVA</label>
                   <input
                     type="date"
                     name="dataIpva"
-                    onBlur={(e) => validarAnoCalendario(e.target)}
                     onChange={(e) => setDataIpva(e.target.value)}
                   />
                 </div>

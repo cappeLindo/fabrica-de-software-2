@@ -59,11 +59,6 @@ const DropdownEspecial = ({
         }
     };
 
-    useEffect(() => {
-        if (valores.length === 0) {
-            onValorSelecionado(label, "desabilitado");
-        }
-    }, [valores, label, onValorSelecionado]);
 
     return (
         <div className={styles.filhoCampoDuasColunas}>

@@ -43,7 +43,7 @@ export default function CardCarro({ carro, isFavorito, onToggleFavorito }) {
       />
       <p>{carro.carro_nome || carro.nome || carro.nomeCarro}</p>
       <button>
-        <Link href={`/descricaoProduto?id=${carro.id}`}>veja mais</Link>
+        <Link href={`/descricaoProduto?id=${carro.id || carro.carro_id}`}>veja mais</Link>
       </button>
     </div>
   );
