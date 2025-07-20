@@ -12,14 +12,6 @@ const Footer = () => {
         </div>
         <div className={styles.footerLinks}>
           <div className={styles.column}>
-            <h3>Institucional</h3>
-            <ul>
-              <li><Link className={styles.link} href="#">Acessibilidade</Link></li>
-              <li><Link className={styles.link} href="#">Gerenciamento de cookies</Link></li>
-              <li><Link className={styles.link} href="#">Termos e condições</Link></li>
-            </ul>
-          </div>
-          <div className={styles.column}>
             <h3>Comprar</h3>
             <ul>
               <li><Link className={styles.link} href="/telaFiltroCarrosVGC">Veículos novos</Link></li>
