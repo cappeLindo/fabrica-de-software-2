@@ -14,7 +14,7 @@ export default function AdicionarProduto() {
     const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
 
     const handleValorSelecionado = (label, valor) => {
-        const valorNormalizado = valor.toLowerCase();
+        const valorNormalizado = typeof valor === 'string' ? valor.toLowerCase() : valor;
         if (label === 'campos') {
             if (valorNormalizado === 'combustível') setValorCampo('combustivel');
             else if (valorNormalizado === 'câmbio') setValorCampo('cambio');
@@ -26,16 +26,19 @@ export default function AdicionarProduto() {
             setMarcaSelecionada(null);
             setCategoriaSelecionada(null);
         }
-
-        if (label === 'marca') setMarcaSelecionada(valor.id);
-        if (label === 'categoria') setCategoriaSelecionada(valor.id);
+        if (label === 'marca') setMarcaSelecionada(valor);
+        if (label === 'categoria') setCategoriaSelecionada(valor);
     };
 
     const buscarResultados = async (busca) => {
-        if (!valorCampo || !busca) return;
+        if (!valorCampo) return;
 
         try {
-            const response = await fetch(`${valorUrl}/${valorCampo}?nome=${busca}`);
+            const url = busca
+                ? `${valorUrl}/${valorCampo}?nome=${encodeURIComponent(busca)}`
+                : `${valorUrl}/${valorCampo}`;
+
+            const response = await fetch(url);
             const data = await response.json();
             setResultados(data);
         } catch (err) {
@@ -54,12 +57,8 @@ export default function AdicionarProduto() {
         if (!pesquisa) return false;
 
         const jaExiste = resultados.some(item =>
-            (item[`nome_${valorCampo}`] || item.nome)?.toLowerCase() === pesquisa.toLowerCase()
+            (item[`nome_${valorCampo}`] || item.nome || item.modelo_nome)?.toLowerCase() === pesquisa.toLowerCase()
         );
-
-        if (valorCampo === 'modelo') {
-            return !jaExiste && marcaSelecionada && categoriaSelecionada;
-        }
 
         return !jaExiste;
     };
@@ -71,10 +70,10 @@ export default function AdicionarProduto() {
             const body =
                 valorCampo === 'modelo'
                     ? {
-                          nome: pesquisa,
-                          id_marca: marcaSelecionada,
-                          id_categoria: categoriaSelecionada
-                      }
+                        nome: pesquisa,
+                        marca_id: marcaSelecionada,
+                        categoria_id: categoriaSelecionada
+                    }
                     : { nome: pesquisa };
 
             const response = await fetch(`${valorUrl}/${valorCampo}`, {
@@ -141,8 +140,8 @@ export default function AdicionarProduto() {
 
                         <ul className={styles.listaResultadoBusca}>
                             {resultados.map((item) => (
-                                <li key={item[`id_${valorCampo}`] || item.id}>
-                                    {item[`nome_${valorCampo}`] || item.nome}
+                                <li key={item[`id_${valorCampo}`] || item.id || item.modelo_id}>
+                                    {item[`nome_${valorCampo}`] || item.nome || item.modelo_nome}
                                 </li>
                             ))}
                         </ul>

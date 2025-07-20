@@ -10,6 +10,9 @@
     min-height: 350px;
     padding: 1%;
     border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .containerListaEBuscar{
@@ -36,16 +39,19 @@
     border-radius: 0 0 10px 10px;
     border: 0.6px solid black;
     margin-top: 2px;
-    max-height: 100px;
+    max-height: 160px;
     overflow-x: auto;
 }
 
 .estilobtn{
-    margin: 10px auto;
+    bottom: 15px;
+    right: 15px;
+    position: absolute;
     background-color: var(--corDetalhes);
-    height: 30px;
+    height: 50px;
     width: 300px;
     border: none;
     border-radius: 10px;
     color: white;
+    
 }
