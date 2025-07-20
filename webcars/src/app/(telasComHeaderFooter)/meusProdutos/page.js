@@ -106,9 +106,6 @@ const MeusProdutos = () => {
                 ></i>
                 {showButtons === index && (
                   <div className={styles.butao}>
-                    <Link href={`/editarProduto?id=${carro.id}`} className={styles.editar}>
-                      Editar
-                    </Link>
                     <button className={styles.delete} onClick={() => removerCarro(carro.id)}>
                       Excluir
                     </button>

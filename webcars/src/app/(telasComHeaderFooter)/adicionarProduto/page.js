@@ -183,8 +183,6 @@ export default function AdicionarProduto() {
     }
   };
 
-
-
   const reload = () => {
     window.location.reload();
   };
