@@ -32,7 +32,8 @@
     border-radius: 10px;
 }
 
-.containerFoto, .textoFoto {
+.containerFoto,
+.textoFoto {
     font-size: 30px;
     color: #C63434;
     font-weight: 600;
@@ -79,6 +80,23 @@
     font-size: 20px;
 }
 
+.itemContato a:hover {
+    color: #750404;
+}
+
+.itemContato i {
+    font-size: 1.5em;
+    margin-right: 10px;
+}
+
+.itemContato a > i {
+    color: #ff0000;
+}
+
+a > .gmail > i {
+    color: #D44638;
+}
+
 .secaoProdutos {
     padding: 20px;
     margin-bottom: 40px;
@@ -97,11 +115,11 @@
     border-radius: 15px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* Centraliza os cards */
+    justify-content: center;
     box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
     padding: 10px;
-    height: auto; /* Permite que se expanda conforme o número de cards */
-    gap: 20px 30px; /* Espaço entre linhas e colunas */
+    height: auto;
+    gap: 20px 30px;
 }
 
 .cartaoProduto {
@@ -128,15 +146,15 @@
     font-size: 14px;
     font-weight: 600;
     color: #575757;
-    min-height: 40px; /* garante um espaço mínimo para o nome */
-    overflow-wrap: break-word; /* quebra linha se precisar */
+    min-height: 40px;
+    overflow-wrap: break-word;
 }
 
 .cartaoProduto button {
     width: 120px;
     height: 30px;
     text-align: center;
-    margin: 12px auto 0 auto; /* Espaço pequeno acima do botão */
+    margin: 12px auto 0 auto;
     display: block;
     border: none;
     border-radius: 5px;
@@ -164,4 +182,10 @@
     text-align: center;
     font-size: 20px;
     color: red;
+}
+
+/* ✅ Remove o sublinhado e mantém o estilo dos links de contato */
+.itemContato a {
+    text-decoration: none;
+    color: inherit;
 }

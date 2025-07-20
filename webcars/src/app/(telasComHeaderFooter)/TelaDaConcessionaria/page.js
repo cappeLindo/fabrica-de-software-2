@@ -57,7 +57,7 @@ const TelaDaConcessionaria = () => {
         const carrosComImagem = await Promise.all(
           dataCarros.dados.map(async (carro) => {
             try {
-              const idImagem = carro.imagens?.[0]; // igual à tela inicial
+              const idImagem = carro.imagens?.[0];
               if (!idImagem) throw new Error('Sem imagem');
               const resImg = await fetch(`${API_BASE_URL}/carro/imagem/${idImagem}`);
               if (!resImg.ok) throw new Error('Erro ao buscar imagem');
@@ -87,6 +87,9 @@ const TelaDaConcessionaria = () => {
 
   return (
     <div className={styles.conteudoPrincipal}>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+
+      {/* FOTO */}
       <section className={styles.secaoFoto}>
         <div className={styles.containerFoto}>
           {fotoConcessionaria ? (
@@ -103,6 +106,7 @@ const TelaDaConcessionaria = () => {
         </div>
       </section>
 
+      {/* INFORMAÇÕES */}
       <section className={styles.secaoInformacoes}>
         <div className={styles.containerSobre}>
           <h2>Sobre</h2>
@@ -114,17 +118,27 @@ const TelaDaConcessionaria = () => {
             <p><strong>Carros anunciados:</strong> {carros.length}</p>
           </div>
         </div>
+
         <div className={styles.containerContatos}>
           <h2>Contatos</h2>
           <div className={styles.itemContato}>
-            <i className="bi bi-whatsapp"></i> Agende um horário
+            <a
+              href={`https://wa.me/55${concessionaria.telefone}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <i className="bi-whatsapp" /> WhatsApp
+            </a>
           </div>
           <div className={styles.itemContato}>
-            <i className="bi bi-instagram"></i> Veja mais sobre
+            <a href={`mailto:${concessionaria.email}`}>
+              <i className="bi-envelope-fill" /> E‑mail Profissional
+            </a>
           </div>
         </div>
       </section>
 
+      {/* PRODUTOS */}
       <section className={styles.secaoProdutos}>
         <h2>Produtos do vendedor</h2>
         <div className={styles.containerProdutos}>
@@ -133,7 +147,7 @@ const TelaDaConcessionaria = () => {
               <div key={carro.id} className={styles.cartaoProduto}>
                 <Image
                   src={carro.imageUrl}
-                  alt={carro.nome || 'Imagem do carro'}
+                  alt={carro.carro_nome || 'Imagem do carro'}
                   width={160}
                   height={120}
                 />
