@@ -115,20 +115,10 @@ export default function CarroDetalhes() {
                     <p className={styles.precoAntigo}>
                         R$ {originalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
-                    <p className={styles.desconto}>-5%</p>
-                    <p className={styles.precoNovo}>
-                        R$ {discountedPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                        <span className={styles.detalheDesconto}> à vista</span>
-                    </p>
-                    <p className={styles.textoOu}>ou</p>
-                    <p className={styles.parcelas}>
-                        2x de R$ {twoInstallments.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros
-                    </p>
-                    <button className={styles.botaoListaDesejos}>
-                        <Link href="/TelaDesejos" className={styles.botaoLoja1}>Adicionar à Lista de Desejos</Link>
-                    </button>
                     <button className={styles.botaoLoja}>
-                        <Link href={`/concessionaria/${carData.concessionaria_id}`} className={styles.botaoLoja1}>Ver na Loja</Link>
+                        <Link href={`/concessionaria/${carData.concessionaria_id}`} className={styles.botaoLoja1}>
+                            Ver na Loja
+                        </Link>
                     </button>
                 </div>
 
@@ -152,6 +142,7 @@ export default function CarroDetalhes() {
                     <div className={styles.gridDetalhes}>
                         <div><p><strong>Marca</strong></p><p>{carData.marca_name}</p></div>
                         <div><p><strong>Modelo</strong></p><p>{carData.modelo_name}</p></div>
+                        <div><p><strong>Cor</strong></p><p>{carData.cor_nome}</p></div>
                         <div><p><strong>Ano</strong></p><p>{carData.ano}</p></div>
                         <div><p><strong>Câmbio</strong></p><p>{carData.cambio_nome}</p></div>
                         <div><p><strong>Estado</strong></p><p>{carData.condicao}</p></div>
