@@ -290,3 +290,22 @@
 .cardResultado:hover {
     background-color: #f7f7f7;
 }
+
+.cardResultado a {
+  color: black;
+  text-decoration: none;
+  font-weight: 300;
+}
+
+.cardResultado a:hover {
+  color: #8B0000; /* vermelho escuro */
+}
+
+.botaoVoltar {
+  background: none;
+  border: none;
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
