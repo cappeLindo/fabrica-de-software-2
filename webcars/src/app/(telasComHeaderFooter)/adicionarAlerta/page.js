@@ -8,6 +8,8 @@ import Link from 'next/link';
 import styles from "./adicionarFiltro.module.css";
 import { formatarQuilometragem, validarAno, formatarValorMonetario, validarAnoCalendario } from "@/components/funcoesDropdown/controleDeDadosSimples.js";
 import { ArrowLeft } from "lucide-react";
+import Cookies from "js-cookie";
+import valorUrl from "../../../../rotaUrl";
 
 export default function AdicionarProduto() {
   const [dropdownAberto, setDropdownAberto] = useState("");
@@ -45,36 +47,45 @@ export default function AdicionarProduto() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validação básica dos campos obrigatórios
+    // Validação básica
     if (!valorNome || !valorValorMinimo || !valorValorMaximo) {
-      alert('Por favor, preencha o nome do filtro e os valores mínimo e máximo.');
+      alert('Preencha o nome do filtro e os valores mínimo e máximo.');
       return;
     }
 
-    // Monta o objeto com os dados do filtro conforme a API
+    const cliente_id = Cookies.get('id'); // ou outro nome da chave
+    if (!cliente_id) {
+      alert('ID do cliente não encontrado no cookie.');
+      return;
+    }
+
+    const parseValor = (valor) => {
+      if (!valor) return null;
+      return parseFloat(valor.replace(/[R$.\s]/g, '').replace(',', '.'));
+    };
+
     const filtroAlerta = {
-      marca: valorMarca || null,
-      modelo: valorModelo || null,
-      aro: valorAro || null,
-      combustivel: valorCombustivel || null,
-      cor: valorCor || null,
-      condicao: valorCondicao || null,
-      cambio: valorCambio || null,
-      ano: valorAno || null,
-      dataCompra: valorDataCompra || null,
-      quilometragem: valorQuilometragem || null,
-      ipva: checkboxValues.ipva ? '1' : '0',
-      blindagem: checkboxValues.blindagem ? '1' : '0',
-      contatoEmail: checkboxValues.contatoEmail ? '1' : '0',
-      contatoNumero: checkboxValues.contatoNumero ? '1' : '0',
-      dataIpva: valorDataIpva || null,
       nome: valorNome,
-      valorMinimo: valorValorMinimo,
-      valorMaximo: valorValorMaximo,
+      cliente_id: parseInt(cliente_id),
+      ano: valorAno ? parseInt(valorAno) : null,
+      condicao: valorCondicao || null,
+      ipva_pago: checkboxValues.ipva,
+      blindagem: checkboxValues.blindagem,
+      data_ipva: valorDataIpva || null,
+      data_compra: valorDataCompra || null,
+      valor_maximo: parseValor(valorValorMaximo),
+      valor_minimo: parseValor(valorValorMinimo),
+      marca_id: valorMarca || null,
+      categoria_id: valorCategoria || null,
+      cambio_id: valorCambio || null,
+      aro_id: valorAro || null,
+      modelo_id: valorModelo || null,
+      combustivel_id: valorCombustivel || null,
+      cor_id: valorCor || null
     };
 
     try {
-      const response = await fetch('https://webcars.dev.vilhena.ifro.edu.br/api/filtroAlerta', {
+      const response = await fetch(valorUrl+'/filtroAlerta', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,12 +100,13 @@ export default function AdicionarProduto() {
 
       const result = await response.json();
       console.log('Filtro salvo com sucesso:', result);
-      setShowMensagem(true); // Exibe mensagem de sucesso
+      setShowMensagem(true);
     } catch (error) {
       console.error('Erro:', error.message);
-      alert(`Ocorreu um erro ao salvar o filtro: ${error.message}`);
+      alert(`Erro ao salvar o filtro: ${error.message}`);
     }
   };
+
 
   const reload = () => {
     window.location.reload();
@@ -151,6 +163,7 @@ export default function AdicionarProduto() {
   return (
     <div className={styles.mainAdicionarVeiculo}>
       <form onSubmit={handleSubmit}>
+        <h2 className={styles.titulo}>Adicionar filtro alerta</h2>
         <div className={styles.fundoCampoAdicionarVeiculo}>
           <div className={styles.campoDuasColunas}>
             <Dropdown

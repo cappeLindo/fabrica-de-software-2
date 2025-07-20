@@ -1,5 +1,5 @@
 .container {
-    width: 80%;
+    max-width: 1200px;
     margin: 10px auto;
     display: flex;
     flex-wrap: wrap;
@@ -49,6 +49,7 @@
     width: 170px; /* Garante que não diminuam abaixo do tamanho mínimo */
     border: 2px var(--corDetalhes) dotted ;
     transition: 0.2s;
+    min-height: 170px;
 }
 
 #cardAdicionar * {
