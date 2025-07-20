@@ -148,7 +148,7 @@
 }
 
 .opcaoContato a:hover {
-    color: #007BFF;
+    color: #750404;
 }
 
 .opcaoContato i {
@@ -157,7 +157,7 @@
 }
 
 .opcaoContato a > i {
-    color: #0ca50c;
+    color: #ff0000;
 }
 
 a > .gmail > i {
